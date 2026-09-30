@@ -7,11 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="כוכבות החשבון">
+<meta name="apple-mobile-web-app-title" content="כוכבי החשבון">
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
-<title>כוכבות החשבון</title>
+<title>כוכבי החשבון</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Varela+Round&display=swap">
@@ -284,7 +284,7 @@ textarea.txt{resize:vertical;line-height:1.5;font-size:12px;word-break:break-all
 <div id="app"></div>
 <script>
 /* ==========================================================================
-   כוכבות החשבון — Kochavot HaCheshbon
+   כוכבי החשבון — Kochavot HaCheshbon
    Single-file adaptive Hebrew math practice app for two kids.
    ========================================================================== */
 "use strict";
@@ -364,6 +364,17 @@ const ACCS = {
     `<path d="M26 82 q24 11 48 0 l0 9 q-24 9 -48 0Z" fill="#B79CED"/>
      <path d="M36 86 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6-3.6 -3.6-1.6 3.6-1.6Z" fill="#FFD86E"/>
      <path d="M62 86 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6-3.6 -3.6-1.6 3.6-1.6Z" fill="#FFD86E"/>` },
+  cap:     { name: "כובע מצחייה", cost: 300, art:
+    `<path d="M22 36 a28 24 0 0 1 56 0 Z" fill="#4FB8D8"/>
+     <path d="M22 36 a28 24 0 0 1 28 -24 l0 24Z" fill="#3A93AE"/>
+     <path d="M78 36 q17 1 17 8 l-21 0Z" fill="#3A93AE"/><circle cx="50" cy="13" r="3.4" fill="#FFD86E"/>` },
+  shades:  { name: "משקפי שמש", cost: 850, art:
+    `<rect x="26" y="49" width="20" height="14" rx="5" fill="#231038"/><rect x="54" y="49" width="20" height="14" rx="5" fill="#231038"/>
+     <rect x="45" y="53" width="10" height="3.4" rx="1.6" fill="#231038"/>
+     <path d="M29 52 l8 0 -8 7Z" fill="#fff" opacity=".4"/><path d="M57 52 l8 0 -8 7Z" fill="#fff" opacity=".4"/>` },
+  bandana: { name: "בנדנה", cost: 1250, art:
+    `<path d="M19 38 q31 -16 62 0 l0 7 q-31 -13 -62 0Z" fill="#FF7A6E"/>
+     <path d="M80 42 l15 7 -13 5Z" fill="#FF7A6E"/><circle cx="34" cy="37" r="2.4" fill="#fff" opacity=".7"/><circle cx="52" cy="34" r="2.4" fill="#fff" opacity=".7"/>` },
   wings:   { name: "כנפי פיה", cost: 2600, need: { k: "solved", n: 500 }, behind:
     `<path d="M16 74 C-2 56 2 24 20 18 C15 42 22 58 33 64Z" fill="#CFE6FF" opacity=".92"/>
      <path d="M84 74 C102 56 98 24 80 18 C85 42 78 58 67 64Z" fill="#CFE6FF" opacity=".92"/>
@@ -396,7 +407,16 @@ const MASCOTS = {
   sora:  { name: "סורה",    c: "#E6D9FF", ear: "halo",  acc: "moon",  d: "מלאכית השמיים", aura: 1 },
   ember: { name: "אמבר",    c: "#FF7A6E", ear: "dragon",acc: "flame", d: "דרקונית האש", aura: 1 },
   aurora:{ name: "אורורה",  c: "#C9A6FF", ear: "uni",   acc: "crown", d: "חד-קרן הזוהר", aura: 2 },
-  stella:{ name: "סטלרה",   c: "#FFE9A8", ear: "phoenix",acc: "gem",  d: "עוף החול של הכוכבות", aura: 2 }
+  stella:{ name: "סטלרה",   c: "#FFE9A8", ear: "phoenix",acc: "gem",  d: "עוף החול של הכוכבים", aura: 2 },
+  /* ---- דמויות נוספות ---- */
+  rocky: { name: "רוקי",    c: "#8FA6C4", ear: "fox",   acc: "bolt",  d: "זאב ההרים" },
+  turbo: { name: "טורבו",   c: "#6EE7F9", ear: "ant",   acc: "bolt",  d: "רובוט המהירות" },
+  finn:  { name: "פין",     c: "#4FB8D8", ear: "fin",   acc: "star",  d: "כריש הגלים" },
+  blaze: { name: "בלייז",   c: "#FF9F4A", ear: "mane",  acc: "flame", d: "אריה הלהבה" },
+  shadow:{ name: "שאדו",    c: "#7B6BB5", ear: "cat",   acc: "moon",  d: "הפנתר השקט" },
+  pixel: { name: "פיקסל",   c: "#7CE7B4", ear: "ant",   acc: "gem",   d: "חייזר המסך" },
+  titan: { name: "טיטאן",   c: "#A79B8C", ear: "dragon",acc: "gem",   d: "גולם הסלע", aura: 1 },
+  draco: { name: "דרקו",    c: "#5FBF7A", ear: "dragon",acc: "flame", d: "הדרקון הירוק", aura: 2 }
 };
 function mascot(id, size, accId) {
   const m = MASCOTS[id] || MASCOTS.luna, c = m.c, s = size || 74;
@@ -413,7 +433,16 @@ function mascot(id, size, accId) {
   if (m.ear === "wing")  ears = `<path d="M14 72 C-4 56 0 26 18 20 C14 40 20 54 30 60Z" fill="${c}"/><path d="M86 72 C104 56 100 26 82 20 C86 40 80 54 70 60Z" fill="${c}"/><path d="M14 72 C2 58 4 32 17 26 M86 72 C98 58 96 32 83 26" stroke="#fff" stroke-width="2" fill="none" opacity=".45"/>`;
   if (m.ear === "deer")  ears = `<path d="M34 38 C30 22 24 18 22 8 M34 30 C28 26 24 24 18 24 M66 38 C70 22 76 18 78 8 M66 30 C72 26 76 24 82 24" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="40" rx="8" ry="6" fill="${c}"/><ellipse cx="70" cy="40" rx="8" ry="6" fill="${c}"/>`;
   if (m.ear === "halo")  ears = `<ellipse cx="50" cy="16" rx="18" ry="5.5" fill="none" stroke="#FFD86E" stroke-width="4"/><ellipse cx="32" cy="34" rx="7" ry="10" fill="${c}"/><ellipse cx="68" cy="34" rx="7" ry="10" fill="${c}"/>`;
-  if (m.ear === "dragon")ears = `<path d="M30 40 L20 14 L44 30Z" fill="${c}"/><path d="M70 40 L80 14 L56 30Z" fill="${c}"/><path d="M16 60 C4 52 6 38 18 36 C16 46 20 52 26 56Z" fill="${c}" opacity=".85"/><path d="M84 60 C96 52 94 38 82 36 C84 46 80 52 74 56Z" fill="${c}" opacity=".85"/>`;
+  if (m.ear === "dragon")ears = `<path d="M30 40 L18 10 L46 30Z" fill="${c}"/><path d="M70 40 L82 10 L54 30Z" fill="${c}"/><path d="M26 28 L18 10 L34 22Z" fill="#2A1240" opacity=".35"/><path d="M74 28 L82 10 L66 22Z" fill="#2A1240" opacity=".35"/><path d="M16 60 C4 52 6 38 18 36 C16 46 20 52 26 56Z" fill="${c}" opacity=".85"/><path d="M84 60 C96 52 94 38 82 36 C84 46 80 52 74 56Z" fill="${c}" opacity=".85"/>`;
+  if (m.ear === "mane")  ears = `<circle cx="50" cy="58" r="42" fill="${c}" opacity=".45"/>
+    ${[...Array(14)].map((_, i) => `<ellipse cx="50" cy="14" rx="7" ry="11" fill="${c}" opacity=".75" transform="rotate(${i * 25.7} 50 58)"/>`).join("")}
+    <circle cx="28" cy="34" r="10" fill="${c}"/><circle cx="72" cy="34" r="10" fill="${c}"/>`;
+  if (m.ear === "ant")   ears = `<path d="M34 34 L28 12" stroke="${c}" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="9" r="5" fill="#FFD86E"/>
+    <path d="M66 34 L72 12" stroke="${c}" stroke-width="4" stroke-linecap="round"/><circle cx="72" cy="9" r="5" fill="#FF8FC7"/>
+    <rect x="16" y="50" width="10" height="20" rx="4" fill="${c}"/><rect x="74" y="50" width="10" height="20" rx="4" fill="${c}"/>`;
+  if (m.ear === "fin")   ears = `<path d="M50 6 C60 20 64 28 64 34 L36 34 C36 26 40 18 50 6Z" fill="${c}"/>
+    <path d="M50 10 C57 22 59 28 59 33 L50 33Z" fill="#fff" opacity=".35"/>
+    <path d="M22 64 L6 58 L21 72Z" fill="${c}"/><path d="M78 64 L94 58 L79 72Z" fill="${c}"/>`;
   if (m.ear === "uni")   ears = `<path d="M50 2 L43 34 h14Z" fill="#FFD86E"/><path d="M46 14 h8 M45 22 h10" stroke="#E0A22C" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="29" cy="38" rx="7.5" ry="11" fill="${c}"/><ellipse cx="71" cy="38" rx="7.5" ry="11" fill="${c}"/><path d="M24 34 C30 18 40 14 48 16" stroke="#FF8FC7" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M76 34 C70 18 60 14 52 16" stroke="#6EE7F9" stroke-width="7" fill="none" stroke-linecap="round"/>`;
   if (m.ear === "phoenix")ears= `<path d="M50 2 L38 32 L62 32Z" fill="#FFD86E"/><path d="M32 12 L28 36 L48 30Z" fill="#FF9F6E"/><path d="M68 12 L72 36 L52 30Z" fill="#FF9F6E"/><path d="M20 58 C6 48 10 32 22 30 C20 42 26 50 32 54Z" fill="#FFB86E" opacity=".9"/><path d="M80 58 C94 48 90 32 78 30 C80 42 74 50 68 54Z" fill="#FFB86E" opacity=".9"/>`;
   let acc = "";
@@ -502,10 +531,38 @@ const addQ = (a, b, op, tag, hint, extra) =>
     hint || (op === "+" ? "אפשר לספור קדימה, או להשלים לעשרת" : "אפשר לספור אחורה, או לרדת קודם לעשרת"),
     sumSteps(a, b, op), extra);
 
-/* ----- שמות ופריטים לבעיות מילוליות ----- */
-const NAMES = ["מאיה", "נועה", "שירה", "תמר", "יעל", "ליבי", "אלה", "רוני", "אביגיל", "טליה", "עידו", "איתי"];
-const ITEMS = ["מדבקות", "סוכריות", "צמידים", "כרטיסים", "בלונים", "פרחים", "כוכבים זוהרים", "עפרונות"];
-const twoNames = () => { const a = pick(NAMES); let b = pick(NAMES); while (b === a) b = pick(NAMES); return [a, b]; };
+/* ----- שמות ופריטים לבעיות מילוליות -----
+   כל שם נושא מגדר, והפעלים בתבניות מתאימים את עצמם. */
+const PEOPLE = [
+  { n: "מאיה", g: "f" }, { n: "נועה", g: "f" }, { n: "שירה", g: "f" }, { n: "תמר", g: "f" },
+  { n: "יעל", g: "f" }, { n: "ליבי", g: "f" }, { n: "אלה", g: "f" }, { n: "טליה", g: "f" },
+  { n: "עידו", g: "m" }, { n: "איתי", g: "m" }, { n: "יונתן", g: "m" }, { n: "אורי", g: "m" },
+  { n: "דניאל", g: "m" }, { n: "נועם", g: "m" }, { n: "אלון", g: "m" }, { n: "רוני", g: "m" }
+];
+const NAMES = PEOPLE.map(x => x.n);
+const ITEMS = ["מדבקות", "סוכריות", "צמידים", "כרטיסים", "בלונים", "פרחים", "כוכבים זוהרים", "עפרונות", "קלפים", "גולות"];
+function who() {
+  const x = pick(PEOPLE), f = x.g === "f";
+  return {
+    n: x.n, g: x.g,
+    he: f ? "היא" : "הוא",
+    lo: f ? "לה" : "לו",
+    got: f ? "קיבלה" : "קיבל",
+    gave: f ? "נתנה" : "נתן",
+    wants: f ? "רוצה" : "רוצה",
+    bought: f ? "קנתה" : "קנה",
+    paid: f ? "שילמה" : "שילם",
+    received: f ? "קיבלה" : "קיבל",
+    friend: f ? "חברה" : "חבר",
+    sib: f ? "אחותה" : "אחיו"
+  };
+}
+function twoPeople() {
+  const a = pick(PEOPLE); let b = pick(PEOPLE);
+  while (b.n === a.n) b = pick(PEOPLE);
+  return [a, b];
+}
+const twoNames = () => { const [a, b] = twoPeople(); return [a.n, b.n]; };
 
 /* ======================================================= כיתה א' ====== */
 function g1add(L) {
@@ -531,7 +588,7 @@ function g1num(L) {
   }
   if (L === 2) { const a = rnd(1, 19); return Q(`איזה מספר בא אחרי ${a}?`, a + 1, "המספר העוקב", "אחרי = צעד אחד קדימה", [["עוקב", `${a} + 1 = ${a + 1}`]], { word: 1, line: 20 }); }
   if (L === 3) { const a = rnd(2, 20); return Q(`איזה מספר בא לפני ${a}?`, a - 1, "המספר הקודם", "לפני = צעד אחד אחורה", [["קודם", `${a} − 1 = ${a - 1}`]], { word: 1, line: 20 }); }
-  if (L === 5) { const a = rnd(1, 9); return Q(`כמה חסר ל-${a} כדי להגיע ל-10?`, 10 - a, "השלמה לעשר", "ספרי מ-" + a + " עד 10", [["חישוב", `10 − ${a} = ${10 - a}`]], { word: 1, line: 10 }); }
+  if (L === 5) { const a = rnd(1, 9); return Q(`כמה חסר ל-${a} כדי להגיע ל-10?`, 10 - a, "השלמה לעשר", "סופרים מ-" + a + " עד 10", [["חישוב", `10 − ${a} = ${10 - a}`]], { word: 1, line: 10 }); }
   if (L === 6) { const e = rnd(1, 9) * 2, o = e + (Math.random() < .5 ? 1 : -1);
     return Q(`איזה מספר זוגי: ${o} או ${e}?`, e, "זוגי ואי-זוגי", "מספר זוגי מתחלק לשתי קבוצות שוות", [["הזוגי", String(e)]], { word: 1 }); }
   if (L === 7) { const st = pick([1, 2, 5, 10]), s0 = rnd(0, 4) * st;
@@ -543,21 +600,21 @@ function g1num(L) {
     [["פירוק", `${n} = ${Math.floor(n / 10) * 10} + ${n % 10}`]], { word: 1 });
 }
 function g1word(L) {
-  const n = pick(NAMES), I = pick(ITEMS), top = L <= 2 ? 10 : 20;
+  const P = who(), I = pick(ITEMS), top = L <= 2 ? 10 : 20;
   if (L === 1 || L === 3) { const a = rnd(2, top - 2), b = rnd(1, top - a);
-    return Q(`ל${n} יש ${a} ${I}. קיבלה עוד ${b}. כמה יש עכשיו?`, a + b, "בעיה — מוסיפים",
+    return Q(`ל${P.n} יש ${a} ${I}. ${P.he} ${P.got} עוד ${b}. כמה יש ${P.lo} עכשיו?`, a + b, "בעיה — מוסיפים",
       "\"עוד\" זה חיבור", [["מחברים", `${a} + ${b} = ${a + b}`]], { word: 1 }); }
   if (L === 2 || L === 4) { const a = rnd(4, top), b = rnd(1, a - 1);
-    return Q(`ל${n} היו ${a} ${I}. נתנה ${b}. כמה נשארו?`, a - b, "בעיה — מורידים",
-      "\"נתנה\" זה חיסור", [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
-  if (L === 5) { const [x, y] = twoNames(), a = rnd(6, 20), b = rnd(1, a - 1);
-    return Q(`ל${x} יש ${a} ${I} ול${y} יש ${b}. בכמה יש ל${x} יותר?`, a - b, "בעיה — השוואה",
+    return Q(`ל${P.n} היו ${a} ${I}. ${P.he} ${P.gave} ${b} ל${P.friend}. כמה נשארו?`, a - b, "בעיה — מורידים",
+      `"${P.gave}" זה חיסור`, [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
+  if (L === 5) { const [x, y] = twoPeople(), a = rnd(6, 20), b = rnd(1, a - 1);
+    return Q(`ל${x.n} יש ${a} ${I} ול${y.n} יש ${b}. בכמה יש ל${x.n} יותר?`, a - b, "בעיה — השוואה",
       "\"בכמה יותר\" זה ההפרש", [["ההפרש", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
   if (L === 6) { const a = rnd(2, 9), c = rnd(a + 1, 20);
-    return Q(`ל${n} יש ${a} ${I} והיא רוצה ${c}. כמה עוד חסרות לה?`, c - a, "בעיה — כמה חסר",
+    return Q(`ל${P.n} יש ${a} ${I} ו${P.he} רוצה ${c}. כמה עוד חסרים ${P.lo}?`, c - a, "בעיה — כמה חסר",
       "כמה צריך להוסיף כדי להגיע", [["חישוב", `${c} − ${a} = ${c - a}`]], { word: 1 }); }
   if (L === 7) { const a = rnd(5, 14), b = rnd(2, 6), c = rnd(1, a + b - 1);
-    return Q(`ל${n} היו ${a} ${I}, קיבלה ${b} ואז נתנה ${c}. כמה יש עכשיו?`, a + b - c, "בעיה — שני שלבים",
+    return Q(`ל${P.n} היו ${a} ${I}, ${P.he} ${P.got} ${b} ואז ${P.gave} ${c}. כמה יש ${P.lo} עכשיו?`, a + b - c, "בעיה — שני שלבים",
       "שלב אחרי שלב", [["שלב 1", `${a} + ${b} = ${a + b}`], ["שלב 2", `${a + b} − ${c} = ${a + b - c}`]], { word: 1 }); }
   const k = rnd(2, 5), a = rnd(2, 4);
   return Q(`ב-${k} קופסאות יש ${a} ${I} בכל אחת. כמה ${I} בסך הכל?`, k * a, "בעיה — קבוצות שוות",
@@ -574,7 +631,7 @@ function g2add(L) {
   if (L === 3) { if (plus) { a = rnd(4, 9); b = rnd(11 - a, 9); } else { a = rnd(12, 18); b = rnd(a % 10 + 1, 9); }
     return addQ(a, b, plus ? "+" : "−", "מעבר עשרת", null, { line: 20 }); }
   if (L === 4) { if (plus) { a = rnd(2, 7) * 10; b = rnd(1, 10 - a / 10) * 10; } else { a = rnd(4, 10) * 10; b = rnd(1, a / 10 - 1) * 10; }
-    return addQ(a, b, plus ? "+" : "−", "עשרות שלמות", `חשבי בעשרות: ${a / 10} ${plus ? "+" : "−"} ${b / 10}`); }
+    return addQ(a, b, plus ? "+" : "−", "עשרות שלמות", `חושבים בעשרות: ${a / 10} ${plus ? "+" : "−"} ${b / 10}`); }
   if (L === 5) { if (plus) { a = rnd(21, 90); if (a % 10 > 8) a -= 3; b = rnd(1, 9 - a % 10); }
     else { a = rnd(23, 98); if (a % 10 < 2) a += 3; b = rnd(1, a % 10); }
     return addQ(a, b, plus ? "+" : "−", "דו-ספרתי ואחדות", "העשרות לא משתנות"); }
@@ -582,7 +639,7 @@ function g2add(L) {
     else { a = rnd(21, 92); if (a % 10 > 7) a -= 5; b = rnd(a % 10 + 1, 9); }
     return addQ(a, b, plus ? "+" : "−", "מעבר עשרת בדו-ספרתי"); }
   if (L === 7) { if (plus) { a = rnd(13, 58); b = rnd(13, Math.min(41, 99 - a)); } else { a = rnd(35, 99); b = rnd(12, a - 10); }
-    return addQ(a, b, plus ? "+" : "−", "דו-ספרתי ודו-ספרתי", `פרקי את ${b} לעשרות ואחדות`); }
+    return addQ(a, b, plus ? "+" : "−", "דו-ספרתי ודו-ספרתי", `מפרקים את ${b} לעשרות ואחדות`); }
   if (Math.random() < .5) { const c = rnd(11, 60); a = rnd(3, c - 2);
     return Q(`${a} + ? = ${c}`, c - a, "תרגיל עם נעלם", `מ-${a} כמה חסר עד ${c}?`, [["הופכים לחיסור", `${c} − ${a} = ${c - a}`]]); }
   a = rnd(12, 40); b = rnd(4, 20); const c2 = rnd(3, 15);
@@ -611,26 +668,31 @@ function g2mul(L) {
   return Math.random() < .5 ? mulQ(pick([2, 3, 4, 5, 10]), rnd(2, 10)) : divQ(pick([2, 3, 4, 5, 10]), rnd(2, 10));
 }
 function g2word(L) {
-  const n = pick(NAMES), I = pick(ITEMS);
+  const P = who(), I = pick(ITEMS);
   if (L === 1) { const a = rnd(5, 20), b = rnd(3, 15);
-    return Q(`ל${n} יש ${a} ${I}. קיבלה עוד ${b}. כמה יש עכשיו?`, a + b, "בעיה — מוסיפים", "\"עוד\" זה חיבור", [["מחברים", `${a} + ${b} = ${a + b}`]], { word: 1 }); }
+    return Q(`ל${P.n} יש ${a} ${I}. ${P.he} ${P.got} עוד ${b}. כמה יש ${P.lo} עכשיו?`, a + b, "בעיה — מוסיפים",
+      "\"עוד\" זה חיבור", [["מחברים", `${a} + ${b} = ${a + b}`]], { word: 1 }); }
   if (L === 2) { const a = rnd(15, 60), b = rnd(4, a - 5);
-    return Q(`ל${n} היו ${a} ${I}. נתנה ${b}. כמה נשארו?`, a - b, "בעיה — מורידים", "\"נתנה\" זה חיסור", [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
-  if (L === 3) { const [x, y] = twoNames(), a = rnd(20, 70), b = rnd(5, a - 5);
-    return Q(`ל${x} יש ${a} ${I} ול${y} יש ${b}. בכמה יש ל${x} יותר?`, a - b, "בעיה — השוואה", "ההפרש בין המספרים", [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
+    return Q(`ל${P.n} היו ${a} ${I}. ${P.he} ${P.gave} ${b}. כמה נשארו?`, a - b, "בעיה — מורידים",
+      `"${P.gave}" זה חיסור`, [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
+  if (L === 3) { const [x, y] = twoPeople(), a = rnd(20, 70), b = rnd(5, a - 5);
+    return Q(`ל${x.n} יש ${a} ${I} ול${y.n} יש ${b}. בכמה יש ל${x.n} יותר?`, a - b, "בעיה — השוואה",
+      "ההפרש בין המספרים", [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
   if (L === 4) { const a = rnd(20, 50), b = rnd(5, 20), c = rnd(3, a + b - 5);
-    return Q(`ל${n} היו ${a} ${I}, קיבלה ${b} ואז נתנה ${c}. כמה יש עכשיו?`, a + b - c, "בעיה — שני שלבים", "שלב אחרי שלב",
-      [["שלב 1", `${a} + ${b} = ${a + b}`], ["שלב 2", `${a + b} − ${c} = ${a + b - c}`]], { word: 1 }); }
+    return Q(`ל${P.n} היו ${a} ${I}, ${P.he} ${P.got} ${b} ואז ${P.gave} ${c} ל${P.sib}. כמה יש ${P.lo} עכשיו?`, a + b - c, "בעיה — שני שלבים",
+      "שלב אחרי שלב", [["שלב 1", `${a} + ${b} = ${a + b}`], ["שלב 2", `${a + b} − ${c} = ${a + b - c}`]], { word: 1 }); }
   if (L === 5) { const k = rnd(3, 8), a = rnd(2, 5);
-    return Q(`ב-${k} חבילות יש ${a} ${I} בכל אחת. כמה בסך הכל?`, k * a, "בעיה — קבוצות שוות", "קבוצות שוות = כפל", [["כופלים", `${k} × ${a} = ${k * a}`]], { word: 1 }); }
+    return Q(`ב-${k} חבילות יש ${a} ${I} בכל אחת. כמה בסך הכל?`, k * a, "בעיה — קבוצות שוות",
+      "קבוצות שוות = כפל", [["כופלים", `${k} × ${a} = ${k * a}`]], { word: 1 }); }
   if (L === 6) { const k = rnd(2, 5), q = rnd(2, 8);
-    return Q(`${k * q} ${I} מתחלקים שווה בשווה בין ${k} חברות. כמה מקבלת כל אחת?`, q, "בעיה — חילוק שווה", "חלוקה שווה = חילוק", [["מחלקים", `${k * q} ÷ ${k} = ${q}`]], { word: 1 }); }
-  if (L === 7) { const p = pick([5, 10]), k = rnd(2, 5), paid = p * k + rnd(5, 30);
-    return Q(`כרטיס עולה ${p} שקלים. ${n} קנתה ${k} כרטיסים ושילמה ${paid} שקלים. כמה עודף קיבלה?`, paid - p * k, "בעיה — קניות ועודף",
-      "קודם כמה עלה, אחר כך העודף", [["המחיר", `${p} × ${k} = ${p * k}`], ["העודף", `${paid} − ${p * k} = ${paid - p * k}`]], { word: 1 }); }
-  const [x, y] = twoNames(), a = rnd(4, 12), k = rnd(2, 4);
-  return Q(`ל${x} יש ${a} ${I}. ל${y} יש פי ${k} יותר. כמה יש לשתיהן ביחד?`, a + a * k, "בעיה — פי כמה",
-    `"פי ${k}" זה כפל, ואז מחברים`, [[`ל${y}`, `${a} × ${k} = ${a * k}`], ["ביחד", `${a} + ${a * k} = ${a + a * k}`]], { word: 1 });
+    return Q(`${k * q} ${I} מתחלקים שווה בשווה בין ${k} ילדים. כמה מקבל כל אחד?`, q, "בעיה — חילוק שווה",
+      "חלוקה שווה = חילוק", [["מחלקים", `${k * q} ÷ ${k} = ${q}`]], { word: 1 }); }
+  if (L === 7) { const pr = pick([5, 10]), k = rnd(2, 5), paid = pr * k + rnd(5, 30);
+    return Q(`כרטיס עולה ${pr} שקלים. ${P.n} ${P.bought} ${k} כרטיסים ו${P.paid} ${paid} שקלים. כמה עודף ${P.received}?`, paid - pr * k, "בעיה — קניות ועודף",
+      "קודם כמה עלה, אחר כך העודף", [["המחיר", `${pr} × ${k} = ${pr * k}`], ["העודף", `${paid} − ${pr * k} = ${paid - pr * k}`]], { word: 1 }); }
+  const [x, y] = twoPeople(), a = rnd(4, 12), k = rnd(2, 4);
+  return Q(`ל${x.n} יש ${a} ${I}. ל${y.n} יש פי ${k} יותר. כמה יש לשניהם ביחד?`, a + a * k, "בעיה — פי כמה",
+    `"פי ${k}" זה כפל, ואז מחברים`, [[`ל${y.n}`, `${a} × ${k} = ${a * k}`], ["ביחד", `${a} + ${a * k} = ${a + a * k}`]], { word: 1 });
 }
 
 /* ======================================================= כיתה ג' ====== */
@@ -639,7 +701,7 @@ function g3ops(L) {
   if (L === 1) { if (plus) { a = rnd(13, 58); b = rnd(13, Math.min(41, 99 - a)); } else { a = rnd(35, 99); b = rnd(12, a - 10); }
     return addQ(a, b, plus ? "+" : "−", "דו-ספרתי"); }
   if (L === 2) { if (plus) { a = rnd(1, 6) * 100; b = rnd(1, 9 - a / 100) * 100; } else { a = rnd(3, 9) * 100; b = rnd(1, a / 100 - 1) * 100; }
-    return Q(`${a} ${plus ? "+" : "−"} ${b} = ?`, plus ? a + b : a - b, "מאות שלמות", `חשבי במאות: ${a / 100} ${plus ? "+" : "−"} ${b / 100}`,
+    return Q(`${a} ${plus ? "+" : "−"} ${b} = ?`, plus ? a + b : a - b, "מאות שלמות", `חושבים במאות: ${a / 100} ${plus ? "+" : "−"} ${b / 100}`,
       [["סופרים מאות", `${a / 100} ${plus ? "+" : "−"} ${b / 100} = ${(plus ? a + b : a - b) / 100}`], ["מוסיפים שני אפסים", String(plus ? a + b : a - b)]]); }
   if (L === 3) { a = rnd(120, 800); a -= a % 10; b = rnd(1, plus ? Math.min(8, (1000 - a) / 10) : a / 10 - 1) * 10;
     return Q(`${a} ${plus ? "+" : "−"} ${b} = ?`, plus ? a + b : a - b, "תלת-ספרתי ועשרות", "רק ספרת העשרות משתנה",
@@ -656,7 +718,7 @@ function g3ops(L) {
     if (!plus && b > a) { const t = a; a = b + 100; b = t; }
     return addQ(a, b, plus ? "+" : "−", "תלת-ספרתי בלי מעבר"); }
   if (L === 7) { a = rnd(250, 950); b = rnd(125, Math.min(480, a - 20));
-    return addQ(a, b, plus ? "+" : "−", "תלת-ספרתי עם מעבר", `פרקי את ${b}: ${Math.floor(b / 100) * 100} + ${Math.floor(b % 100 / 10) * 10} + ${b % 10}`); }
+    return addQ(a, b, plus ? "+" : "−", "תלת-ספרתי עם מעבר", `מפרקים את ${b}: ${Math.floor(b / 100) * 100} + ${Math.floor(b % 100 / 10) * 10} + ${b % 10}`); }
   if (Math.random() < .5) { const c = rnd(150, 900); a = rnd(30, c - 20);
     return Q(`${a} + ? = ${c}`, c - a, "תרגיל עם נעלם", `מ-${a} כמה חסר עד ${c}?`, [["הופכים לחיסור", `${c} − ${a} = ${c - a}`]]); }
   a = rnd(120, 500); b = rnd(40, 200); const c3 = rnd(30, 150);
@@ -672,26 +734,31 @@ function g3mul(L) {
   return mulQ(pick(T[L] || [2, 3, 4, 5]), rnd(2, 10));
 }
 function g3word(L) {
-  const n = pick(NAMES), I = pick(ITEMS);
+  const P = who(), I = pick(ITEMS);
   if (L === 1) { const a = rnd(40, 200), b = rnd(20, 150);
-    return Q(`ל${n} יש ${a} ${I}. קיבלה עוד ${b}. כמה יש עכשיו?`, a + b, "בעיה — מוסיפים", "", [["מחברים", `${a} + ${b} = ${a + b}`]], { word: 1 }); }
+    return Q(`ל${P.n} יש ${a} ${I}. ${P.he} ${P.got} עוד ${b}. כמה יש ${P.lo} עכשיו?`, a + b, "בעיה — מוסיפים", "",
+      [["מחברים", `${a} + ${b} = ${a + b}`]], { word: 1 }); }
   if (L === 2) { const a = rnd(160, 600), b = rnd(30, Math.min(250, a - 30));
-    return Q(`בספרייה ${a} ספרים. הושאלו ${b}. כמה נשארו?`, a - b, "בעיה — מורידים", "", [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
+    return Q(`בספרייה ${a} ספרים. הושאלו ${b}. כמה נשארו?`, a - b, "בעיה — מורידים", "",
+      [["מחסרים", `${a} − ${b} = ${a - b}`]], { word: 1 }); }
   if (L === 3) { const k = rnd(3, 9), a = rnd(6, 12);
-    return Q(`ב-${k} קופסאות יש ${a} ${I} בכל אחת. כמה בסך הכל?`, k * a, "בעיה — קבוצות שוות", "קבוצות שוות = כפל", [["כופלים", `${k} × ${a} = ${k * a}`]], { word: 1 }); }
+    return Q(`ב-${k} קופסאות יש ${a} ${I} בכל אחת. כמה בסך הכל?`, k * a, "בעיה — קבוצות שוות",
+      "קבוצות שוות = כפל", [["כופלים", `${k} × ${a} = ${k * a}`]], { word: 1 }); }
   if (L === 4) { const k = rnd(3, 8), q = rnd(3, 9);
-    return Q(`${k * q} ${I} מתחלקים שווה בשווה בין ${k} ילדים. כמה מקבל כל אחד?`, q, "בעיה — חילוק שווה", "", [["מחלקים", `${k * q} ÷ ${k} = ${q}`]], { word: 1 }); }
-  if (L === 5) { const p = pick([12, 15, 18, 25]), k = rnd(3, 6);
-    return Q(`מחברת עולה ${p} שקלים. כמה עולות ${k} מחברות?`, p * k, "בעיה — מחיר", "", [["כופלים", `${p} × ${k} = ${p * k}`]], { word: 1 }); }
-  if (L === 6) { const p = pick([8, 12, 15]), k = rnd(3, 6), paid = p * k + rnd(10, 50);
-    return Q(`${n} קנתה ${k} פריטים ב-${p} שקלים כל אחד ושילמה ${paid} שקלים. כמה עודף קיבלה?`, paid - p * k, "בעיה — קניות ועודף", "",
-      [["המחיר", `${p} × ${k} = ${p * k}`], ["העודף", `${paid} − ${p * k} = ${paid - p * k}`]], { word: 1 }); }
+    return Q(`${k * q} ${I} מתחלקים שווה בשווה בין ${k} ילדים. כמה מקבל כל אחד?`, q, "בעיה — חילוק שווה", "",
+      [["מחלקים", `${k * q} ÷ ${k} = ${q}`]], { word: 1 }); }
+  if (L === 5) { const pr = pick([12, 15, 18, 25]), k = rnd(3, 6);
+    return Q(`מחברת עולה ${pr} שקלים. כמה עולות ${k} מחברות?`, pr * k, "בעיה — מחיר", "",
+      [["כופלים", `${pr} × ${k} = ${pr * k}`]], { word: 1 }); }
+  if (L === 6) { const pr = pick([8, 12, 15]), k = rnd(3, 6), paid = pr * k + rnd(10, 50);
+    return Q(`${P.n} ${P.bought} ${k} פריטים ב-${pr} שקלים כל אחד ו${P.paid} ${paid} שקלים. כמה עודף ${P.received}?`, paid - pr * k, "בעיה — קניות ועודף", "",
+      [["המחיר", `${pr} × ${k} = ${pr * k}`], ["העודף", `${paid} − ${pr * k} = ${paid - pr * k}`]], { word: 1 }); }
   if (L === 7) { const a = rnd(60, 250), b = rnd(20, 90), c = rnd(10, 80);
     return Q(`בחנות היו ${a} ${I}. הגיעו עוד ${b} ונמכרו ${c}. כמה יש עכשיו?`, a + b - c, "בעיה — שני שלבים", "",
       [["שלב 1", `${a} + ${b} = ${a + b}`], ["שלב 2", `${a + b} − ${c} = ${a + b - c}`]], { word: 1 }); }
   const k = rnd(3, 6), a = rnd(4, 9), c = rnd(5, 20);
-  return Q(`ב-${k} שולחנות יושבים ${a} ילדים בכל שולחן, ועוד ${c} ילדים עומדים. כמה ילדים בסך הכל?`, k * a + c, "בעיה — כפל וחיבור", "קודם הכפל, אחר כך החיבור",
-    [["בשולחנות", `${k} × ${a} = ${k * a}`], ["ביחד", `${k * a} + ${c} = ${k * a + c}`]], { word: 1 });
+  return Q(`ב-${k} שולחנות יושבים ${a} ילדים בכל שולחן, ועוד ${c} ילדים עומדים. כמה ילדים בסך הכל?`, k * a + c, "בעיה — כפל וחיבור",
+    "קודם הכפל, אחר כך החיבור", [["בשולחנות", `${k} × ${a} = ${k * a}`], ["ביחד", `${k * a} + ${c} = ${k * a + c}`]], { word: 1 });
 }
 </script>
 
@@ -699,7 +766,7 @@ function g3word(L) {
 /* ======================================================= כיתה ד' ====== */
 function g4ops(L) {
   if (L === 1) { const a = rnd(12, 49), b = rnd(3, 9);
-    return Q(`${a} × ${b} = ?`, a * b, "דו-ספרתי בחד-ספרתי", `פרקי: ${Math.floor(a / 10) * 10} + ${a % 10}`,
+    return Q(`${a} × ${b} = ?`, a * b, "דו-ספרתי בחד-ספרתי", `מפרקים: ${Math.floor(a / 10) * 10} + ${a % 10}`,
       [["העשרות", `${Math.floor(a / 10) * 10} × ${b} = ${Math.floor(a / 10) * 10 * b}`],
        ["האחדות", `${a % 10} × ${b} = ${a % 10 * b}`],
        ["מחברים", `${Math.floor(a / 10) * 10 * b} + ${a % 10 * b} = ${a * b}`]]); }
@@ -707,7 +774,7 @@ function g4ops(L) {
     return Q(`${a} × ${m} = ?`, a * m, "כפל ב-10 וב-100", `מוסיפים ${m === 10 ? "אפס אחד" : "שני אפסים"}`,
       [["התשובה", String(a * m)]]); }
   if (L === 3) { const a = rnd(112, 432), b = rnd(2, 5);
-    return Q(`${a} × ${b} = ?`, a * b, "תלת-ספרתי בחד-ספרתי", "פרקי למאות, עשרות ואחדות",
+    return Q(`${a} × ${b} = ?`, a * b, "תלת-ספרתי בחד-ספרתי", "מפרקים למאות, עשרות ואחדות",
       [["מאות", `${Math.floor(a / 100) * 100} × ${b} = ${Math.floor(a / 100) * 100 * b}`],
        ["עשרות ואחדות", `${a % 100} × ${b} = ${a % 100 * b}`],
        ["מחברים", `${a * b}`]]); }
@@ -718,7 +785,7 @@ function g4ops(L) {
     return Q(`${d * q + r} ÷ ${d} — כמה נשאר?`, r, "חילוק עם שארית", `${d} × ${q} = ${d * q}, וזה קרוב ל-${d * q + r}`,
       [["הכפולה הקרובה", `${d} × ${q} = ${d * q}`], ["השארית", `${d * q + r} − ${d * q} = ${r}`]]); }
   if (L === 6) { const a = rnd(12, 39), b = rnd(11, 29);
-    return Q(`${a} × ${b} = ?`, a * b, "דו-ספרתי בדו-ספרתי", `פרקי את ${b}: ${Math.floor(b / 10) * 10} + ${b % 10}`,
+    return Q(`${a} × ${b} = ?`, a * b, "דו-ספרתי בדו-ספרתי", `מפרקים את ${b}: ${Math.floor(b / 10) * 10} + ${b % 10}`,
       [["עשרות", `${a} × ${Math.floor(b / 10) * 10} = ${a * Math.floor(b / 10) * 10}`],
        ["אחדות", `${a} × ${b % 10} = ${a * (b % 10)}`],
        ["מחברים", `${a * Math.floor(b / 10) * 10} + ${a * (b % 10)} = ${a * b}`]]); }
@@ -766,8 +833,8 @@ function g4meas(L) {
   if (L === 7) { const a = rnd(3, 15), b = rnd(3, 12);
     return Q(`מלבן באורך ${a} ס"מ וברוחב ${b} ס"מ. מה השטח?`, a * b, "שטח מלבן", "שטח = אורך × רוחב",
       [["כופלים", `${a} × ${b} = ${a * b}`]], { word: 1 }); }
-  const p = pick([12, 18, 24, 35]), k = rnd(3, 6), paid = p * k + rnd(20, 90);
-  return Q(`${pick(NAMES)} קנתה ${k} פריטים ב-${p} שקלים כל אחד ושילמה ${paid} שקלים. כמה עודף קיבלה?`, paid - p * k, "בעיית קניות", "",
+  const p = pick([12, 18, 24, 35]), k = rnd(3, 6), paid = p * k + rnd(20, 90), W = who();
+  return Q(`${W.n} ${W.bought} ${k} פריטים ב-${p} שקלים כל אחד ו${W.paid} ${paid} שקלים. כמה עודף ${W.received}?`, paid - p * k, "בעיית קניות", "",
     [["המחיר", `${p} × ${k} = ${p * k}`], ["העודף", `${paid} − ${p * k} = ${paid - p * k}`]], { word: 1 });
 }
 
@@ -850,7 +917,7 @@ function g5geo(L) {
       [["סכום", `${a} + ${b} + ${c} = ${s}`], ["מחלקים ב-3", `${s} ÷ 3 = ${q}`]], { word: 1 }); }
   if (L === 7) { const q = rnd(12, 25), v = [q + rnd(-3, 3), q + rnd(-3, 3), q + rnd(-3, 3)];
     v.push(4 * q - v[0] - v[1] - v[2]);
-    return Q(`בארבעה מבחנים קיבלה ${v[0]}, ${v[1]}, ${v[2]} ו-${v[3]}. מה הממוצע?`, q, "ממוצע", "סכום חלקי הכמות",
+    return Q(`בארבעה מבחנים הציונים היו ${v[0]}, ${v[1]}, ${v[2]} ו-${v[3]}. מה הממוצע?`, q, "ממוצע", "סכום חלקי הכמות",
       [["סכום", `${v.join(" + ")} = ${4 * q}`], ["מחלקים ב-4", `${4 * q} ÷ 4 = ${q}`]], { word: 1 }); }
   const a = rnd(5, 15), b = rnd(4, 12), k = rnd(2, 5);
   return Q(`חדר בגודל ${a} × ${b} מטר. כמה עולה לרצף אותו אם מטר מרובע עולה ${k * 10} שקלים?`, a * b * k * 10, "שטח ומחיר", "קודם שטח, אחר כך מחיר",
@@ -883,7 +950,7 @@ function g6frac(L) {
     return Q(`בספרייה ${total} ספרים. ${k}/${d} מהם באנגלית. כמה ספרים בעברית?`, total - total / d * k, "בעיית שברים", "קודם כמה באנגלית",
       [["באנגלית", `${total} ÷ ${d} × ${k} = ${total / d * k}`], ["בעברית", `${total} − ${total / d * k} = ${total - total / d * k}`]], { word: 1 }); }
   const d = pick([4, 6, 8]), a = rnd(1, d - 1), k = rnd(2, 4);
-  return Q(`${a}/${d} מכמות כלשהי זה ${a * k}. מה הכמות השלמה?`, d * k, "מציאת השלם", `אם ${a} חלקים זה ${a * k}, חלק אחד זה ${k}`,
+  return Q(`${a}/${d} מכמות מסוימת הם ${a * k}. מה הכמות השלמה?`, d * k, "מציאת השלם", `אם ${a} חלקים זה ${a * k}, חלק אחד זה ${k}`,
     [["חלק אחד", `${a * k} ÷ ${a} = ${k}`], ["השלם", `${k} × ${d} = ${d * k}`]], { word: 1 });
 }
 function g6pct(L) {
@@ -901,7 +968,7 @@ function g6pct(L) {
       [["התוספת", `${base * p / 100}`], ["סופי", `${base + base * p / 100}`]], { word: 1 }); }
   if (L === 5) { const w = rnd(1, 9), d = rnd(1, 9), k = rnd(2, 8);
     const val = r1((w + d / 10) * k);
-    return Q(`${w}.${d} × ${k} = ?`, val, "כפל עשרוני", `כופלים כאילו אין נקודה ואז מחזירים אותה`,
+    return Q(`${w}.${d} × ${k} = ?`, val, "כפל עשרוני", `כופלים כאילו אין נקודה, ואז מחזירים אותה`,
       [["בלי נקודה", `${w * 10 + d} × ${k} = ${(w * 10 + d) * k}`], ["מחזירים נקודה", String(val)]], { dec: 1 }); }
   if (L === 6) { const q = rnd(2, 9), d = rnd(1, 9), k = pick([2, 3, 4]);
     const dividend = r1((q + d / 10) * k);
@@ -1057,17 +1124,25 @@ const SHOP = {
   avatars: [
     { id: "luna",   cost: 0 },
     { id: "cherry", cost: 0 },
-    { id: "nana",   cost: 0 },
+    { id: "rocky",  cost: 0 },
+    { id: "turbo",  cost: 0 },
+    { id: "nana",   cost: 150 },
     { id: "mochi",  cost: 220 },
+    { id: "finn",   cost: 300 },
     { id: "shine",  cost: 360 },
+    { id: "blaze",  cost: 480 },
     { id: "vespa",  cost: 520 },
+    { id: "shadow", cost: 620 },
     { id: "kiwi",   cost: 700 },
+    { id: "pixel",  cost: 800 },
     { id: "peachy", cost: 900 },
     { id: "bell",   cost: 1200 },
     { id: "nova",   cost: 1600, need: { k: "solved", n: 300 } },
     { id: "sora",   cost: 2200, need: { k: "solved", n: 600 } },
+    { id: "titan",  cost: 2800, need: { k: "boss", n: 15 } },
     { id: "ember",  cost: 3000, need: { k: "boss", n: 20 } },
     { id: "aurora", cost: 4200, need: { k: "lv8", n: 1 } },
+    { id: "draco",  cost: 5000, need: { k: "solved", n: 1500 } },
     { id: "stella", cost: 6000, need: { k: "solved", n: 2000 } }
   ],
   pets: [
@@ -1092,7 +1167,7 @@ const SHOP = {
     { id: "bg7",  name: "אקווריום",     cost: 1100, css: "linear-gradient(160deg,#0E2B4A,#1C6FA8 55%,#7FE3F5)" },
     { id: "bg8",  name: "חלל עמוק",     cost: 1500, css: "radial-gradient(circle at 30% 25%,#5B3CA8,#180F33 70%)", need: { k: "hi5", n: 100 } },
     { id: "bg9",  name: "מעל העננים",   cost: 2100, css: "linear-gradient(160deg,#2B2260,#B57FD6 45%,#FFD3E8)", need: { k: "streak", n: 10 } },
-    { id: "bg10", name: "אולם הכוכבות", cost: 3600, css: "linear-gradient(120deg,#FFD86E,#FF8FC7 35%,#B79CED 65%,#6EE7F9)", need: { k: "gold", n: 2 } }
+    { id: "bg10", name: "אולם הכוכבים", cost: 3600, css: "linear-gradient(120deg,#FFD86E,#FF8FC7 35%,#B79CED 65%,#6EE7F9)", need: { k: "gold", n: 2 } }
   ],
   fx: [
     { id: "fx_star",   name: "כוכבי במה",     cost: 0,    g: "★", c: "#FFD86E", w: ["יש!", "נכון!", "מעולה!"] },
@@ -1121,7 +1196,7 @@ const EVENT_TYPES = [
   { key: "t2", topic: "t2", art: "cape",
     title: p => "אתגר " + topicOf(p, "t2").name, blurb: p => "12 שאלות ב" + topicOf(p, "t2").name + ", ברמה שלך" },
   { key: "mix", topic: "mix", art: "star",
-    title: () => "אתגר הכוכבות", blurb: () => "12 שאלות משלושת הנושאים" }
+    title: () => "אתגר הכוכבים", blurb: () => "12 שאלות משלושת הנושאים" }
 ];
 const evTitle = (t, p) => typeof t.title === "function" ? t.title(p || P()) : t.title;
 const evBlurb = (t, p) => typeof t.blurb === "function" ? t.blurb(p || P()) : t.blurb;
@@ -1132,13 +1207,13 @@ if (!S.profiles) S = { profiles: [], cur: null, sound: true, pin: null, rivals: 
 if (!S.rivals) S.rivals = [];
 let view = "pick", nav = "home", B = null, parentUnlocked = false;
 
-function newProfile(name, avatar, grade) {
+function newProfile(name, avatar, grade, sex) {
   return {
     id: "p" + Date.now() + Math.floor(Math.random() * 99), name: name || "כוכבת", avatar: avatar || "luna",
     coins: 60, streak: 0, lastDay: null, anchor: dayNum(),
-    grade: grade || 2, diplomas: [],
+    grade: grade || 2, sex: sex || "f", diplomas: [],
     skills: { t0: { lv: 1, fun: false, low: 0, bs: 0 }, t1: { lv: 1, fun: false, low: 0, bs: 0 }, t2: { lv: 1, fun: false, low: 0, bs: 0 } },
-    owned: ["luna", "cherry", "nana", "bg1", "fx_star", "acc_none"], pet: null, bg: "bg1", fx: "fx_star", acc: "none",
+    owned: ["luna", "cherry", "rocky", "turbo", "bg1", "fx_star", "acc_none"], pet: null, bg: "bg1", fx: "fx_star", acc: "none",
     log: [], miss: [], battles: 0, sinceBoss: 0, secs: 0, dayGoal: 0,
     events: {}, trophies: [], placed: false,
     xp: 0, solved: { total: 0, lv: {} }, bosses: 0, perfects: 0, bestCombo: 0, bestStreak: 0,
@@ -1147,6 +1222,12 @@ function newProfile(name, avatar, grade) {
   };
 }
 const P = () => S.profiles.find(p => p.id === S.cur);
+/* לשון פנייה לפי המשתמש/ת: T("נקבה", "זכר") */
+function T(f, m, prof) {
+  const who = prof || P();
+  const sx = (who && who.sex) || (typeof newp === "object" && newp && newp.sex) || "f";
+  return sx === "m" ? m : f;
+}
 
 function touchDay() {
   const p = P(); if (!p) return;
@@ -1392,50 +1473,50 @@ function A(id, fam, name, req, rarity, glyph, val, goal) { ACH.push({ id, fam, n
 /* מסע ברמות — השמות נקבעים לפי הנושאים של הכיתה הנוכחית */
 [["t0", "bolt"], ["t1", "gem"], ["t2", "book"]].forEach(([t, gl]) => {
   const nm = p => topicOf(p, t).name;
-  A("lv4_" + t, "מסע ברמות", p => "מתחילה ב" + nm(p), "להגיע לרמה 4", "c", gl, p => p.skills[t].lv, 4);
-  A("lv6_" + t, "מסע ברמות", p => "מתקדמת ב" + nm(p), "להגיע לרמה 6", "r", gl, p => p.skills[t].lv, 6);
-  A("lv8_" + t, "מסע ברמות", p => "אלופת " + nm(p), "להגיע לרמה 8", "e", gl, p => p.skills[t].lv, 8);
+  A("lv4_" + t, "מסע ברמות", p => T("מתחילה ב", "מתחיל ב", p) + nm(p), "להגיע לרמה 4", "c", gl, p => p.skills[t].lv, 4);
+  A("lv6_" + t, "מסע ברמות", p => T("מתקדמת ב", "מתקדם ב", p) + nm(p), "להגיע לרמה 6", "r", gl, p => p.skills[t].lv, 6);
+  A("lv8_" + t, "מסע ברמות", p => T("אלופת ", "אלוף ", p) + nm(p), "להגיע לרמה 8", "e", gl, p => p.skills[t].lv, 8);
 });
 A("lv8_all", "מסע ברמות", "שלושת הכתרים", "רמה 8 בכל שלושת הנושאים", "g", "crown",
   p => TOPIC_IDS.filter(t => p.skills[t].lv >= 8).length, 3);
 
 /* שקדנות */
 A("s50", "שקדנות", "צעד ראשון", "50 תרגילים נכונים", "c", "star", p => p.solved.total, 50);
-A("s250", "שקדנות", "מתאמנת רצינית", "250 תרגילים נכונים", "r", "star", p => p.solved.total, 250);
+A("s250", "שקדנות", p => T("מתאמנת רצינית", "מתאמן רציני", p), "250 תרגילים נכונים", "r", "star", p => p.solved.total, 250);
 A("s1000", "שקדנות", "אלף הכוכבים", "1,000 תרגילים נכונים", "e", "sparkle", p => p.solved.total, 1000);
 A("s3000", "שקדנות", "אגדת הבמה", "3,000 תרגילים נכונים", "g", "sparkle", p => p.solved.total, 3000);
 
 /* תרגילים לפי רמה */
-A("h3_100", "רמות גבוהות", "מטפסת", "100 תרגילים נכונים ברמה 3 ומעלה", "c", "target", p => solvedAtLeast(p, 3), 100);
+A("h3_100", "רמות גבוהות", p => T("מטפסת", "מטפס", p), "100 תרגילים נכונים ברמה 3 ומעלה", "c", "target", p => solvedAtLeast(p, 3), 100);
 A("h5_200", "רמות גבוהות", "גובה 5", "200 תרגילים נכונים ברמה 5 ומעלה", "r", "target", p => solvedAtLeast(p, 5), 200);
-A("h7_300", "רמות גבוהות", "פסגת הכוכבות", "300 תרגילים נכונים ברמה 7 ומעלה", "e", "gem", p => solvedAtLeast(p, 7), 300);
+A("h7_300", "רמות גבוהות", "פסגת הכוכבים", "300 תרגילים נכונים ברמה 7 ומעלה", "e", "gem", p => solvedAtLeast(p, 7), 300);
 A("h7_600", "רמות גבוהות", "יהלום הפסגה", "600 תרגילים נכונים ברמה 7 ומעלה", "g", "gem", p => solvedAtLeast(p, 7), 600);
 
 /* נקודות */
-A("xp500", "נקודות", "אוספת כוכבים", "500 נקודות בסך הכל", "c", "star", p => p.xp, 500);
-A("xp2500", "נקודות", "אלופת הכוכבים", "2,500 נקודות", "r", "medal", p => p.xp, 2500);
+A("xp500", "נקודות", p => T("אוספת כוכבים", "אוסף כוכבים", p), "500 נקודות בסך הכל", "c", "star", p => p.xp, 500);
+A("xp2500", "נקודות", p => T("אלופת הכוכבים", "אלוף הכוכבים", p), "2,500 נקודות", "r", "medal", p => p.xp, 2500);
 A("xp10k", "נקודות", "אוצר הזהב", "10,000 נקודות", "e", "medal", p => p.xp, 10000);
 A("xp30k", "נקודות", "הכתר הזוהר", "30,000 נקודות", "g", "crown", p => p.xp, 30000);
 
 /* רצף ימים */
 A("st3", "רצף ימים", "שלושה ימים", "3 ימים ברצף", "c", "flame", p => p.bestStreak, 3);
 A("st7", "רצף ימים", "שבוע שלם", "7 ימים ברצף", "r", "flame", p => p.bestStreak, 7);
-A("st21", "רצף ימים", "עקשנית", "21 ימים ברצף", "e", "flame", p => p.bestStreak, 21);
+A("st21", "רצף ימים", p => T("עקשנית", "עקשן", p), "21 ימים ברצף", "e", "flame", p => p.bestStreak, 21);
 A("st60", "רצף ימים", "להבה נצחית", "60 ימים ברצף", "g", "flame", p => p.bestStreak, 60);
 
 /* קומבו */
 A("cb5", "קומבו", "רצף יפה", "קומבו של 5", "c", "bolt", p => p.bestCombo, 5);
 A("cb12", "קומבו", "סופת תשובות", "קומבו של 12", "r", "bolt", p => p.bestCombo, 12);
-A("cb25", "קומבו", "בלתי נעצרת", "קומבו של 25", "e", "bolt", p => p.bestCombo, 25);
+A("cb25", "קומבו", p => T("בלתי נעצרת", "בלתי נעצר", p), "קומבו של 25", "e", "bolt", p => p.bestCombo, 25);
 
 /* בוסים */
-A("bs5", "קרבות בוס", "ציידת מתחילה", "לנצח 5 בוסים", "c", "cape", p => p.bosses, 5);
-A("bs25", "קרבות בוס", "ציידת מנוסה", "לנצח 25 בוסים", "r", "cape", p => p.bosses, 25);
-A("bs75", "קרבות בוס", "ציידת האגדות", "לנצח 75 בוסים", "e", "cape", p => p.bosses, 75);
+A("bs5", "קרבות בוס", p => T("ציידת מתחילה", "צייד מתחיל", p), "לנצח 5 בוסים", "c", "cape", p => p.bosses, 5);
+A("bs25", "קרבות בוס", p => T("ציידת מנוסה", "צייד מנוסה", p), "לנצח 25 בוסים", "r", "cape", p => p.bosses, 25);
+A("bs75", "קרבות בוס", p => T("ציידת האגדות", "צייד האגדות", p), "לנצח 75 בוסים", "e", "cape", p => p.bosses, 75);
 
 /* קרבות מושלמים */
 A("pf5", "בלי טעות אחת", "מושלם", "5 קרבות בלי טעות", "c", "heart", p => p.perfects, 5);
-A("pf30", "בלי טעות אחת", "מדויקת", "30 קרבות בלי טעות", "r", "heart", p => p.perfects, 30);
+A("pf30", "בלי טעות אחת", p => T("מדויקת", "מדויק", p), "30 קרבות בלי טעות", "r", "heart", p => p.perfects, 30);
 A("pf100", "בלי טעות אחת", "ללא רבב", "100 קרבות בלי טעות", "e", "ribbon", p => p.perfects, 100);
 
 /* אירועים */
@@ -1540,6 +1621,7 @@ function upgrade(p) {
   if (!p.season) p.season = { id: null, xp: 0, solved: 0, hi5: 0, hi7: 0, evWin: 0 };
   if (!p.fx) { p.fx = "fx_star"; if (p.owned.indexOf("fx_star") < 0) p.owned.push("fx_star"); }
   if (!p.acc) { p.acc = "none"; if (p.owned.indexOf("acc_none") < 0) p.owned.push("acc_none"); }
+  if (!p.sex) p.sex = "f";
   TOPIC_IDS.forEach(t => { if (!p.skills[t].bs) p.skills[t].bs = 0; });
   syncSeason(p);
 }
@@ -1555,27 +1637,32 @@ let pinBuf = "";
 function viewPick() {
   if (newp) {
     return `<div class="pick">
-      <div class="logo"><h1>מי מצטרפת ללהקה?</h1><p>בחרי שם ודמות — אפשר לשנות אחר כך</p></div>
+      <div class="logo"><h1>${T("מי מצטרפת ללהקה?", "מי מצטרף ללהקה?")}</h1><p>${T("בחרי", "בחר")} שם ודמות — אפשר לשנות אחר כך</p></div>
       <div class="card">
         <label for="nm" style="font-size:13px;color:var(--dim)">איך קוראים לך?</label>
         <input id="nm" class="txt" style="margin-top:6px" maxlength="12" value="${esc(newp.name)}" placeholder="השם שלך">
-        <div class="sec-title">בחרי דמות</div>
+        <div class="sec-title">בת או בן?</div>
+        <div class="rowbtns">
+          <button class="btn ${(newp.sex || "f") === "f" ? "pink" : "ghost"}" style="flex:1" data-newsex="f">בת</button>
+          <button class="btn ${newp.sex === "m" ? "" : "ghost"}" style="flex:1" data-newsex="m">בן</button>
+        </div>
+        <div class="sec-title">${T("בחרי דמות", "בחר דמות")}</div>
         <div class="grid3">${SHOP.avatars.filter(a => a.cost === 0).map(a =>
           `<button class="item ${newp.avatar === a.id ? "eq" : ""}" data-av="${a.id}"><span class="avdisc">${mascot(a.id, 52)}</span><b>${MASCOTS[a.id].name}</b></button>`).join("")}</div>
-        <div class="sec-title">באיזו כיתה את?</div>
+        <div class="sec-title">${T("באיזו כיתה את?", "באיזו כיתה אתה?")}</div>
         ${gradePicker(newp.grade || 2, "data-newgrade")}
       </div>
-      <button class="btn pink" id="mk">יאללה, מתחילות ✦</button>
+      <button class="btn pink" id="mk">יאללה, מתחילים ✦</button>
       ${S.profiles.length ? '<button class="btn ghost" id="cancel">ביטול</button>' : ""}
     </div>`;
   }
   return `<div class="pick">
-    <div class="logo"><h1>כוכבות החשבון</h1><p>תרגול שמתאים את עצמו אלייך</p></div>
+    <div class="logo"><h1>כוכבי החשבון</h1><p>תרגול שמתאים את עצמו אליך</p></div>
     ${S.profiles.map(p => `<button class="pcard" data-p="${p.id}">
         <span class="av" style="background:${SHOP.bgs.find(b => b.id === p.bg)?.css || "var(--raised)"}">${mascot(p.avatar, 54, p.acc)}</span>
         <span><h3>${esc(p.name)}</h3><span>${p.coins} ★ · ${streakTxt(p.streak)}</span></span>
       </button>`).join("")}
-    <button class="btn ghost" id="add">+ הוספת כוכבת</button>
+    <button class="btn ghost" id="add">+ הוספת שחקן/ית</button>
     <div style="display:flex;gap:8px;margin-top:6px">
       <button class="btn ghost" id="snd" style="flex:1">${S.sound ? "🔊 צליל דלוק" : "🔇 מושתק"}</button>
       <button class="btn ghost" id="par" style="flex:1">${ICONS.gear} מסך הורה</button>
@@ -1592,7 +1679,7 @@ function topicCard(id) {
     <div class="glow" style="background:${t.color}"></div>
     <h3 style="color:var(--ink)">${t.name} <span style="color:${t.color};font-size:15px">${t.icon}</span></h3>
     <div class="sub">רמה ${sk.lv} מתוך 8 · ${t.levels[sk.lv - 1]}</div>
-    ${sk.fun ? '<div class="tagfun">✦ מצב אימון כיף — מתאמנות עד שזה נכנס</div>' : ""}
+    ${sk.fun ? '<div class="tagfun">✦ מצב אימון כיף — מתאמנים עד שזה נכנס</div>' : ""}
     <div class="steps">${[...Array(8)].map((_, i) =>
       `<span class="step ${i + 1 < sk.lv ? "on" : i + 1 === sk.lv ? "now" : ""}"></span>`).join("")}</div>
     <div class="rowbtns">
@@ -1793,7 +1880,7 @@ function viewShop() {
   const hint = { avatars: "הדמויות היקרות נפתחות רק אחרי הרבה תרגול", accs: "האביזר נשאר על הדמות שלך בכל מסך",
                  pets: "חיית לוויה מלווה אותך במסך הבית",
                  bgs: "הרקע משנה את החדר שלך ואת מסך הבחירה", fx: "אפקט לכל תשובה נכונה" }[shopTab];
-  return `<h2 style="font-size:22px;margin-bottom:4px">חנות הכוכבות</h2>
+  return `<h2 style="font-size:22px;margin-bottom:4px">חנות הכוכבים</h2>
     <div style="font-size:13px;color:var(--dim);margin-bottom:2px">${hint}. פרסי אירועים ועונות לא נמכרים כאן לעולם.</div>
     <div class="tabs">${SHOP_TABS.map(([k, l]) =>
       `<button data-stab="${k}" aria-selected="${shopTab === k}">${l}</button>`).join("")}</div>
@@ -1818,11 +1905,11 @@ function viewEvents() {
       <h3 style="font-size:19px">${rec && rec.tier && rec.tier !== "none" ? "סיימת את האירוע הזה 🎉" : "הפעם הבמה לא הייתה שלנו"}</h3>
       <p style="color:var(--dim);font-size:14px">${rec && rec.tier && rec.tier !== "none"
         ? "זכית בפרס " + TIER_TXT[rec.tier] + ". אי אפשר לחזור על אותו אירוע."
-        : "שני המועדים נוצלו. האירוע הבא נפתח בעוד " + ev.nextInDays + " ימים ואת תהיי מוכנה 💜"}</p>
+        : "שני המועדים נוצלו. האירוע הבא נפתח בעוד " + ev.nextInDays + " ימים ו" + T("את תהיי מוכנה", "אתה תהיה מוכן") + " 💜"}</p>
       ${rec && rec.weak ? `<div class="soft" style="margin-top:10px;text-align:right">
         <div style="font-size:13px;color:var(--dim)">רוב הטעויות היו ב:</div>
         <b style="font-family:var(--disp)">${esc(rec.weak)}</b>
-        <button class="btn pink" style="margin-top:10px" data-play="${ev.type.topic === "mix" ? "add" : ev.type.topic}">בואי נתאמן על זה</button></div>` : ""}
+        <button class="btn pink" style="margin-top:10px" data-play="${ev.type.topic === "mix" ? "add" : ev.type.topic}">${T("בואי", "בוא")} נתאמן על זה</button></div>` : ""}
     </div>`;
   } else {
     const topicLv = ev.type.topic === "mix"
@@ -1844,7 +1931,7 @@ function viewEvents() {
         <div class="item">${trophyArt(ev.type.art, "silver", 40)}<b>כסף</b><span>9-10 נכון</span><span>150 ★</span></div>
         <div class="item">${trophyArt(ev.type.art, "bronze", 40)}<b>ארד</b><span>8 נכון</span><span>60 ★</span></div>
       </div>
-      <button class="btn gold" style="margin-top:14px" data-startev="1">יש לי ${left === 2 ? "ניסיון אחד במועד א'" : "ניסיון אחרון"} — מוכנה!</button>
+      <button class="btn gold" style="margin-top:14px" data-startev="1">יש לי ${left === 2 ? "ניסיון אחד במועד א'" : "ניסיון אחרון"} — ${T("מוכנה", "מוכן")}!</button>
     </div>`;
   }
   return `<h2 style="font-size:22px;margin-bottom:10px">אירועים מיוחדים</h2>${body}
@@ -1865,7 +1952,12 @@ function viewRoom() {
     <div class="sec-title">שינוי שם</div>
     <input id="rn" class="txt" maxlength="12" value="${esc(p.name)}">
     <button class="btn ghost" id="sv" style="margin-top:8px">שמירה</button>
-    <div class="sec-title">איפה אני עומדת</div>
+    <div class="sec-title">לשון פנייה</div>
+    <div class="rowbtns">
+      <button class="btn ${p.sex !== "m" ? "pink" : "ghost"}" style="flex:1" data-setsex="f">בת</button>
+      <button class="btn ${p.sex === "m" ? "" : "ghost"}" style="flex:1" data-setsex="m">בן</button>
+    </div>
+    <div class="sec-title">${T("איפה אני עומדת", "איפה אני עומד")}</div>
     <div class="list">${TOPIC_IDS.map(id => {
       const sk = p.skills[id];
       return `<div class="lrow"><b style="min-width:96px">${topicOf(p, id).name}</b>
@@ -1884,7 +1976,7 @@ function viewRoom() {
     <button class="btn ghost" style="margin-top:8px" data-go="promote">מעבר כיתה ותעודות</button>
     <div class="sec-title">כלליות</div>
     <div class="rowbtns">
-      <button class="btn ghost" style="flex:1" data-go="compare">השוואה עם חברה</button>
+      <button class="btn ghost" style="flex:1" data-go="compare">${T("השוואה עם חברה", "השוואה עם חבר")}</button>
       <button class="btn ghost" style="flex:1" data-go="backup">גיבוי ושחזור</button>
     </div>
     <button class="btn ghost" id="snd2" style="margin-top:8px">${S.sound ? "🔊 צליל דלוק" : "🔇 מושתק"}</button>
@@ -2117,7 +2209,7 @@ function viewCompare() {
 
   if (!her) {
     return `<h2 style="font-size:22px;margin-bottom:4px">השוואה</h2>
-      <p style="color:var(--dim);font-size:13.5px">אפשר להשוות בין שתי כוכבות על אותו מכשיר,
+      <p style="color:var(--dim);font-size:13.5px">אפשר להשוות בין שתי כוכבים על אותו מכשיר,
       או להדביק קוד של חברה ממכשיר אחר.</p>${codeBox}
       <button class="btn ghost" style="margin-top:14px" data-go="room">חזרה</button>`;
   }
@@ -2141,7 +2233,7 @@ function viewCompare() {
     ${others.length > 1 ? `<div class="tabs" style="flex-wrap:wrap">${others.map(o =>
       `<button data-cmp="${esc(o.key)}" aria-selected="${cmpOther === o.key}">${esc(o.name)}</button>`).join("")}</div>` : ""}
     <div class="cmp-head">
-      <div style="border-bottom:4px solid var(--cyan)"><div class="mascot-wrap">${mascot(you.av, 60, you.ac)}</div><b>${esc(you.n)}</b><span>את</span></div>
+      <div style="border-bottom:4px solid var(--cyan)"><div class="mascot-wrap">${mascot(you.av, 60, you.ac)}</div><b>${esc(you.n)}</b><span>${T("את", "אתה")}</span></div>
       <div class="vs">VS</div>
       <div style="border-bottom:4px solid var(--pink)"><div class="mascot-wrap">${mascot(her.av, 60, her.ac)}</div><b>${esc(her.n)}</b><span>${esc(her.d || "")}</span></div>
     </div>
@@ -2168,7 +2260,7 @@ function viewCompare() {
       ${cmpRow("פרסי זהב", gold(you), gold(her))}
       ${cmpRow("פריטים בחנות (מתוך " + ALL_SHOP().length + ")", you.ow.length, her.ow.length)}
     </div>
-    ${strengths.length ? `<div class="sec-title">במה כל אחת חזקה</div>
+    ${strengths.length ? `<div class="sec-title">היתרונות של כל צד</div>
       <div class="list">${[...new Set(strengths.map(s => s[0]))].map(nm =>
         `<div class="lrow"><b>${esc(nm)}</b><div class="spacer"></div>
           <span style="font-size:12.5px;color:var(--dim);text-align:left">${strengths.filter(s => s[0] === nm).map(s => esc(s[1])).join(" · ")}</span></div>`).join("")}</div>` : ""}
@@ -2228,7 +2320,7 @@ function viewPromote() {
   return `<div style="padding-block:18px 24px">
     <h2 style="font-size:23px;margin-bottom:4px">מעבר כיתה</h2>
     <p style="color:var(--dim);font-size:13.5px;margin-top:2px">
-      ${esc(p.name)} נמצאת עכשיו ב${GRADES[g - 1].name}.
+      ${esc(p.name)} ${T("נמצאת", "נמצא")} עכשיו ב${GRADES[g - 1].name}.
       ${done ? "זו הכיתה האחרונה בתוכנית." : "בסוף השנה אפשר לעלות ל" + next.name + "."}</p>
 
     <div class="card" style="margin-top:12px">
@@ -2242,7 +2334,7 @@ function viewPromote() {
       </div>
       ${done ? `<p class="center" style="color:var(--dim);font-size:14px;margin-bottom:0">אין כיתה מעל ו' בתוכנית הזו.</p>`
         : `<button class="btn ${promoteArmed ? "gold" : "pink"}" style="margin-top:14px" id="promgo">
-            ${promoteArmed ? "בטוח? לחצו שוב כדי לעלות ל" + next.name : "עלי ל" + next.name}</button>
+            ${promoteArmed ? "בטוח? לחצו שוב כדי לעלות ל" + next.name : T("עלי ל", "עלה ל") + next.name}</button>
            ${promoteArmed ? '<button class="btn ghost" style="margin-top:8px" id="promcancel">ביטול</button>' : ""}`}
     </div>
 
@@ -2364,7 +2456,7 @@ async function cloudResume() {
 /* ------------------------------------------------------------ מסך כניסה */
 function viewAuth() {
   return `<div class="pick">
-    <div class="logo"><h1>כוכבות החשבון</h1><p>תרגול חשבון לכיתות א'–ו'</p></div>
+    <div class="logo"><h1>כוכבי החשבון</h1><p>תרגול חשבון לכיתות א'–ו'</p></div>
     <div class="tabs">
       <button data-atab="in" aria-selected="${authTab === "in"}">כניסה</button>
       <button data-atab="up" aria-selected="${authTab === "up"}">הרשמה</button>
@@ -2480,7 +2572,7 @@ function renderBattle() {
   } else if (B.game === "line") {
     const N = q.line, w = 320, step = w / N;
     body = `<div class="qbox"><div class="qtext">${esc(q.text.replace(" = ?", ""))}</div>
-      <div style="font-size:13px;color:var(--dim);margin-top:6px">סמני את התשובה על הציר</div></div>
+      <div style="font-size:13px;color:var(--dim);margin-top:6px">סמנו את התשובה על הציר</div></div>
       <div class="nline"><svg viewBox="0 0 340 74" style="width:100%;height:74px">
         <line x1="10" y1="40" x2="330" y2="40" stroke="#5B44A0" stroke-width="3"/>
         ${[...Array(N + 1)].map((_, i) => {
@@ -2509,7 +2601,7 @@ function renderBattle() {
   const hint = B.hint && !isEvent ? `<div class="hintbox">💡 ${esc(q.hint)}</div>` : "";
   const expl = B.explain ? `<div class="steps-x">${q.steps.map(s =>
       `<div class="lbl">${esc(s[0])}</div><div>${esc(s[1])}</div>`).join("")}
-      <button class="btn pink" style="margin-top:12px" data-next="1">הבנתי, ממשיכות</button></div>` : "";
+      <button class="btn pink" style="margin-top:12px" data-next="1">הבנתי, ממשיכים</button></div>` : "";
 
   return `<div class="bwrap">${head}${stage}${body}${hint}${expl}</div>`;
 }
@@ -2646,10 +2738,10 @@ function viewResult() {
           ${r.weak ? `<div style="font-size:13px;color:var(--dim)">רוב הטעויות היו ב:</div><b style="font-family:var(--disp);font-size:17px">${esc(r.weak)}</b>` : ""}
           <p style="font-size:14.5px;margin-bottom:0">${again
             ? "יש לך עוד הזדמנות אחת — <b>מועד ב'</b>. כדאי להתאמן קודם."
-            : "האירוע הבא בעוד כמה ימים, ואת תהיי מוכנה 💜"}</p>
+            : "האירוע הבא בעוד כמה ימים, ו" + T("את תהיי מוכנה", "אתה תהיה מוכן") + " 💜"}</p>
         </div>
         ${fb}
-        <button class="btn pink" data-play="${r.topic === "mix" ? "add" : r.topic}">בואי נתאמן על זה</button>
+        <button class="btn pink" data-play="${r.topic === "mix" ? "add" : r.topic}">${T("בואי", "בוא")} נתאמן על זה</button>
         <button class="btn ghost" data-go="home">לבית</button>
       </div>`;
     }
@@ -2686,7 +2778,7 @@ function viewResult() {
       <div class="tile"><b class="num">+${r.coins}</b><span>כוכבים</span></div>
       <div class="tile"><b class="num">×${r.maxCombo}</b><span>קומבו</span></div>
     </div>
-    ${r.fun === "on" ? `<div class="soft" style="font-size:14.5px">עוברות ל<b>מצב אימון כיף</b> — אותם תרגילים, אבל במשחקים. נתאמן עד שזה נכנס ✦</div>` : ""}
+    ${r.fun === "on" ? `<div class="soft" style="font-size:14.5px">עוברים ל<b>מצב אימון כיף</b> — אותם תרגילים, אבל במשחקים. נתאמן עד שזה נכנס ✦</div>` : ""}
     ${r.fun === "off" ? `<div class="soft" style="font-size:14.5px">יצאת ממצב האימון — הרמה חזרה לעלות! 🎉</div>` : ""}
     ${fb}
     <button class="btn pink" data-play="${r.topic}">עוד קרב</button>
@@ -2736,7 +2828,7 @@ function wireScreen() {
   });
   const mk = $("#mk"); if (mk) mk.onclick = () => {
     const nm = ($("#nm").value || "").trim() || "כוכבת";
-    const np = newProfile(nm, newp.avatar, newp.grade || 2);
+    const np = newProfile(nm, newp.avatar, newp.grade || 2, newp.sex || "f");
     if (!np.owned.includes(newp.avatar)) np.owned.push(newp.avatar);
     S.profiles.push(np); S.cur = np.id; newp = null; persist(); touchDay();
     SFX.win(); confetti(30); go("home", "home");
@@ -2789,6 +2881,14 @@ function wireScreen() {
   const so = $("#signout"); if (so) so.onclick = () => { SFX.tap(); cloudSignOut(); };
 
   /* grades */
+  document.querySelectorAll("[data-newsex]").forEach(b => b.onclick = () => {
+    newp.sex = b.dataset.newsex;
+    newp.name = ($("#nm") || {}).value || newp.name;
+    SFX.tap(); render();
+  });
+  document.querySelectorAll("[data-setsex]").forEach(b => b.onclick = () => {
+    P().sex = b.dataset.setsex; persist(); SFX.tap(); render();
+  });
   document.querySelectorAll("[data-newgrade]").forEach(b => b.onclick = () => {
     newp.grade = Number(b.dataset.newgrade);
     newp.name = ($("#nm") || {}).value || newp.name;
