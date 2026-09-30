@@ -123,6 +123,7 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;margin:0;text-wrap:balance;lett
 .item span{display:block;font-size:11.5px;color:var(--dim);line-height:1.4}
 .item span.fxprev{display:inline-block;font-size:27px;color:inherit}
 .item span.fxword-mini{font-size:13px;color:inherit}
+.item span.avdisc{display:inline-grid;width:max-content;aspect-ratio:1;margin:0 auto}
 .nav svg{width:22px;height:22px}
 
 /* ---------- profile select ---------- */
@@ -135,7 +136,8 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;margin:0;text-wrap:balance;lett
 .pcard{display:flex;align-items:center;gap:14px;background:var(--stage);border:1px solid var(--line);
   border-radius:var(--rl);padding:14px;width:100%;text-align:right;transition:transform .1s}
 .pcard:active{transform:scale(.98)}
-.pcard .av{width:64px;height:64px;flex:none;border-radius:50%;display:grid;place-items:center}
+.pcard .av{width:76px;height:76px;flex:none;border-radius:50%;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.16), 0 6px 18px rgba(0,0,0,.35)}
 .pcard h3{font-size:21px}
 .pcard span{font-size:13px;color:var(--dim)}
 
@@ -251,6 +253,17 @@ textarea.txt{resize:vertical;line-height:1.5;font-size:12px;word-break:break-all
 .gradebtn.on{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,216,110,.25)}
 .gradebtn b{display:block;font-family:var(--disp);font-size:16px}
 .gradebtn span{display:block;font-size:10.5px;color:var(--dim);line-height:1.35;margin-top:3px}
+.avdisc{display:inline-grid;place-items:center;border-radius:50%;padding:9px;
+  width:max-content;aspect-ratio:1;line-height:0;
+  background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.15),rgba(0,0,0,.26));
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.14), 0 5px 14px rgba(0,0,0,.30)}
+.item.eq .avdisc{box-shadow:inset 0 0 0 3px var(--gold), 0 0 20px rgba(255,216,110,.28)}
+.item.own .avdisc{box-shadow:inset 0 0 0 2px rgba(124,231,180,.55), 0 6px 16px rgba(0,0,0,.32)}
+.duel{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin:2px 0 6px}
+.duel.solo{justify-content:center;margin-bottom:2px}
+.duel .hero,.duel .foe{position:relative;flex:0 0 auto;line-height:0}
+.duel .hero .pet{position:absolute;bottom:-2px;inset-inline-start:-16px;line-height:0}
+.duel .vsx{font-family:var(--disp);color:var(--gold);font-size:17px;opacity:.65;padding-bottom:30px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip2{font-size:12px;background:var(--raised);border:1px solid var(--line);border-radius:99px;padding:5px 11px}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
@@ -324,6 +337,49 @@ const SFX = {
   hit:  () => tone(180, "sawtooth", .1, 0, .07)
 };
 
+
+/* ---- אביזרים שאפשר לקנות ולהלביש על הדמות ---- */
+const ACCS = {
+  none:    { name: "בלי אביזר", cost: 0 },
+  bow2:    { name: "סרט ענק", cost: 200, art:
+    `<path d="M32 28 l-17 -10 0 20Z" fill="#FF6FB5"/><path d="M44 28 l17 -10 0 20Z" fill="#FF6FB5"/>
+     <circle cx="38" cy="28" r="7.5" fill="#FFA8D2"/><circle cx="38" cy="28" r="3" fill="#FF6FB5"/>` },
+  crown:   { name: "כתר קטן", cost: 450, art:
+    `<path d="M32 32 L29 10 l9 7 12-13 12 13 9-7 -3 22Z" fill="#FFD86E"/>
+     <circle cx="50" cy="14" r="3.4" fill="#FF8FC7"/><circle cx="32" cy="32" r="2.4" fill="#FF8FC7"/><circle cx="68" cy="32" r="2.4" fill="#FF8FC7"/>` },
+  glasses: { name: "משקפי לב", cost: 700, art:
+    `<path d="M38 50 c3-4 9.5-2 9.5 3.2 0 5.4-9.5 9.8-9.5 9.8s-9.5-4.4-9.5-9.8c0-5.2 6.5-7.2 9.5-3.2Z" fill="#FF6FB5" opacity=".9"/>
+     <path d="M62 50 c3-4 9.5-2 9.5 3.2 0 5.4-9.5 9.8-9.5 9.8s-9.5-4.4-9.5-9.8c0-5.2 6.5-7.2 9.5-3.2Z" fill="#FF6FB5" opacity=".9"/>
+     <rect x="47" y="53" width="6" height="3.4" rx="1.6" fill="#FF6FB5"/>` },
+  cans:    { name: "אוזניות במה", cost: 1000, art:
+    `<path d="M20 54 a30 30 0 0 1 60 0" stroke="#6EE7F9" stroke-width="7" fill="none" stroke-linecap="round"/>
+     <rect x="11" y="50" width="15" height="24" rx="7.5" fill="#6EE7F9"/><rect x="74" y="50" width="15" height="24" rx="7.5" fill="#6EE7F9"/>
+     <rect x="15" y="56" width="7" height="12" rx="3.5" fill="#1D5C6B"/><rect x="78" y="56" width="7" height="12" rx="3.5" fill="#1D5C6B"/>` },
+  flower:  { name: "כתר פרחים", cost: 1400, art:
+    [[27,36],[36,29],[50,26],[64,29],[73,36]].map((f, i) =>
+      `<g transform="translate(${f[0]} ${f[1]})">${[0,72,144,216,288].map(a =>
+        `<ellipse cx="0" cy="-5" rx="3.2" ry="4.6" fill="${["#FFB8CE","#FFE9A8","#CFE6FF","#A9F0C9","#E6D9FF"][i]}" transform="rotate(${a})"/>`).join("")}
+        <circle r="2.6" fill="#FFD86E"/></g>`).join("") },
+  scarf:   { name: "צעיף כוכבים", cost: 1900, art:
+    `<path d="M26 82 q24 11 48 0 l0 9 q-24 9 -48 0Z" fill="#B79CED"/>
+     <path d="M36 86 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6-3.6 -3.6-1.6 3.6-1.6Z" fill="#FFD86E"/>
+     <path d="M62 86 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6-3.6 -3.6-1.6 3.6-1.6Z" fill="#FFD86E"/>` },
+  wings:   { name: "כנפי פיה", cost: 2600, need: { k: "solved", n: 500 }, behind:
+    `<path d="M16 74 C-2 56 2 24 20 18 C15 42 22 58 33 64Z" fill="#CFE6FF" opacity=".92"/>
+     <path d="M84 74 C102 56 98 24 80 18 C85 42 78 58 67 64Z" fill="#CFE6FF" opacity=".92"/>
+     <path d="M16 74 C2 58 4 28 19 22 M84 74 C98 58 96 28 81 22" stroke="#fff" stroke-width="2" fill="none" opacity=".55"/>` },
+  halo:    { name: "הילת אור", cost: 3400, need: { k: "streak", n: 14 }, art:
+    `<ellipse cx="50" cy="13" rx="19" ry="6" fill="none" stroke="#FFD86E" stroke-width="5"/>
+     <ellipse cx="50" cy="13" rx="19" ry="6" fill="none" stroke="#fff" stroke-width="1.6" opacity=".6"/>` },
+  horns:   { name: "קרני שדונית", cost: 4500, need: { k: "boss", n: 30 }, art:
+    `<path d="M30 34 C23 14 33 6 39 21" stroke="#FF7A6E" stroke-width="8" fill="none" stroke-linecap="round"/>
+     <path d="M70 34 C77 14 67 6 61 21" stroke="#FF7A6E" stroke-width="8" fill="none" stroke-linecap="round"/>` },
+  tiara:   { name: "נזר היהלום", cost: 6500, need: { k: "solved", n: 2500 }, art:
+    `<path d="M32 34 q18 -16 36 0 l-5 -1 q-13 -10 -26 0Z" fill="#6EE7F9"/>
+     <path d="M50 12 l3.4 7.6 7.6 3.4 -7.6 3.4 -3.4 7.6 -3.4-7.6 -7.6-3.4 7.6-3.4Z" fill="#fff"/>
+     <circle cx="36" cy="30" r="2.6" fill="#fff"/><circle cx="64" cy="30" r="2.6" fill="#fff"/>` }
+};
+
 /* ---------------------------------------------------------------- art */
 /* Original chibi mascots — drawn as SVG, no third-party characters. */
 const MASCOTS = {
@@ -342,8 +398,9 @@ const MASCOTS = {
   aurora:{ name: "אורורה",  c: "#C9A6FF", ear: "uni",   acc: "crown", d: "חד-קרן הזוהר", aura: 2 },
   stella:{ name: "סטלרה",   c: "#FFE9A8", ear: "phoenix",acc: "gem",  d: "עוף החול של הכוכבות", aura: 2 }
 };
-function mascot(id, size) {
+function mascot(id, size, accId) {
   const m = MASCOTS[id] || MASCOTS.luna, c = m.c, s = size || 74;
+  const W = (accId && accId !== "none") ? ACCS[accId] : null;
   let ears = "";
   if (m.ear === "long")  ears = `<ellipse cx="36" cy="24" rx="8" ry="21" fill="${c}"/><ellipse cx="64" cy="24" rx="8" ry="21" fill="${c}"/><ellipse cx="36" cy="26" rx="4" ry="14" fill="#fff" opacity=".55"/><ellipse cx="64" cy="26" rx="4" ry="14" fill="#fff" opacity=".55"/>`;
   if (m.ear === "cat")   ears = `<path d="M30 44 L28 16 L50 32Z" fill="${c}"/><path d="M70 44 L72 16 L50 32Z" fill="${c}"/><path d="M34 40 L33 25 L45 34Z" fill="#fff" opacity=".5"/><path d="M66 40 L67 25 L55 34Z" fill="#fff" opacity=".5"/>`;
@@ -368,7 +425,9 @@ function mascot(id, size) {
   if (m.acc === "gem")   acc = `<path d="M70 34 h14 l6 8 -13 12 -13-12Z" fill="#6EE7F9"/><path d="M70 34 l3 8 h8 l3-8" fill="none" stroke="#fff" stroke-width="1.6" opacity=".6"/>`;
   if (m.acc === "crown") acc = `<path d="M64 46 L62 30 l7 5 8-11 8 11 7-5 -2 16Z" fill="#FFD86E"/>`;
   if (m.acc === "flame") acc = `<path d="M78 32 c6 7 9 9 9 16 a9 9 0 0 1 -18 0 c0-5 4-6 5-11 2 3 3 4 4 5 1-4 0-7 0-10Z" fill="#FFD86E"/>`;
+  if (W && W.art) acc = W.art;
   return `<svg viewBox="0 0 100 100" width="${s}" height="${s}" class="${m.aura === 2 ? "aura2" : m.aura === 1 ? "aura1" : ""}" aria-hidden="true">
+    ${W && W.behind ? W.behind : ""}
     ${ears}
     <circle cx="50" cy="58" r="32" fill="${c}"/>
     <circle cx="50" cy="58" r="32" fill="#fff" opacity=".14"/>
@@ -1046,8 +1105,11 @@ const SHOP = {
     { id: "fx_flame",  name: "אש ורודה",      cost: 1800, g: "▲", c: "#FF7A6E", w: ["בוערת!", "אש!", "בלתי נעצרת!"], need: { k: "solved", n: 400 } },
     { id: "fx_rain",   name: "קשת בענן",      cost: 2600, g: "✧", c: "#A9F0C9", w: ["צבעונית!", "מושלם!", "קשת!"], need: { k: "hi5", n: 250 } },
     { id: "fx_galaxy", name: "פיצוץ גלקסיה",  cost: 4000, g: "✸", c: "#C9A6FF", w: ["אגדה!", "גלקטי!", "בלתי אפשרי!"], need: { k: "solved", n: 1500 } }
-  ]
+  ],
+  accs: Object.keys(ACCS).map(k => Object.assign({ id: "acc_" + k, key: k }, ACCS[k]))
 };
+const ACCBY = {};
+SHOP.accs.forEach(a => ACCBY[a.id] = a);
 const FXBY = {};
 SHOP.fx.forEach(f => FXBY[f.id] = f);
 
@@ -1076,7 +1138,7 @@ function newProfile(name, avatar, grade) {
     coins: 60, streak: 0, lastDay: null, anchor: dayNum(),
     grade: grade || 2, diplomas: [],
     skills: { t0: { lv: 1, fun: false, low: 0, bs: 0 }, t1: { lv: 1, fun: false, low: 0, bs: 0 }, t2: { lv: 1, fun: false, low: 0, bs: 0 } },
-    owned: ["luna", "cherry", "nana", "bg1", "fx_star"], pet: null, bg: "bg1", fx: "fx_star",
+    owned: ["luna", "cherry", "nana", "bg1", "fx_star", "acc_none"], pet: null, bg: "bg1", fx: "fx_star", acc: "none",
     log: [], miss: [], battles: 0, sinceBoss: 0, secs: 0, dayGoal: 0,
     events: {}, trophies: [], placed: false,
     xp: 0, solved: { total: 0, lv: {} }, bosses: 0, perfects: 0, bestCombo: 0, bestStreak: 0,
@@ -1218,7 +1280,7 @@ const streakTxt = n => n === 1 ? "יום אחד ברצף" : n + " ימים בר�
 function topBar() {
   const p = P();
   return `<div class="topbar">
-    <button class="tb-face" data-go="pick" aria-label="החלפת פרופיל">${mascot(p.avatar, 34)}</button>
+    <button class="tb-face" data-go="pick" aria-label="החלפת פרופיל">${mascot(p.avatar, 34, p.acc)}</button>
     <div><div class="tb-name">${esc(p.name)}</div><div class="tb-sub">${gradeOf(p).name} · ${streakTxt(p.streak)}</div></div>
     <div class="spacer"></div>
     <span class="chip gold"><span class="num">${p.coins}</span> ★</span>
@@ -1477,6 +1539,7 @@ function upgrade(p) {
   if (!p.missed) p.missed = [];
   if (!p.season) p.season = { id: null, xp: 0, solved: 0, hi5: 0, hi7: 0, evWin: 0 };
   if (!p.fx) { p.fx = "fx_star"; if (p.owned.indexOf("fx_star") < 0) p.owned.push("fx_star"); }
+  if (!p.acc) { p.acc = "none"; if (p.owned.indexOf("acc_none") < 0) p.owned.push("acc_none"); }
   TOPIC_IDS.forEach(t => { if (!p.skills[t].bs) p.skills[t].bs = 0; });
   syncSeason(p);
 }
@@ -1498,7 +1561,7 @@ function viewPick() {
         <input id="nm" class="txt" style="margin-top:6px" maxlength="12" value="${esc(newp.name)}" placeholder="השם שלך">
         <div class="sec-title">בחרי דמות</div>
         <div class="grid3">${SHOP.avatars.filter(a => a.cost === 0).map(a =>
-          `<button class="item ${newp.avatar === a.id ? "eq" : ""}" data-av="${a.id}">${mascot(a.id, 52)}<b>${MASCOTS[a.id].name}</b></button>`).join("")}</div>
+          `<button class="item ${newp.avatar === a.id ? "eq" : ""}" data-av="${a.id}"><span class="avdisc">${mascot(a.id, 52)}</span><b>${MASCOTS[a.id].name}</b></button>`).join("")}</div>
         <div class="sec-title">באיזו כיתה את?</div>
         ${gradePicker(newp.grade || 2, "data-newgrade")}
       </div>
@@ -1509,7 +1572,7 @@ function viewPick() {
   return `<div class="pick">
     <div class="logo"><h1>כוכבות החשבון</h1><p>תרגול שמתאים את עצמו אלייך</p></div>
     ${S.profiles.map(p => `<button class="pcard" data-p="${p.id}">
-        <span class="av" style="background:${SHOP.bgs.find(b => b.id === p.bg)?.css || "var(--raised)"}">${mascot(p.avatar, 54)}</span>
+        <span class="av" style="background:${SHOP.bgs.find(b => b.id === p.bg)?.css || "var(--raised)"}">${mascot(p.avatar, 54, p.acc)}</span>
         <span><h3>${esc(p.name)}</h3><span>${p.coins} ★ · ${streakTxt(p.streak)}</span></span>
       </button>`).join("")}
     <button class="btn ghost" id="add">+ הוספת כוכבת</button>
@@ -1552,7 +1615,7 @@ function viewHome() {
       </div></button>`;
   }
   const place = p.placed ? "" : `<div class="card" style="margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:12px">${mascot(p.avatar, 52)}
+      <div style="display:flex;align-items:center;gap:12px">${mascot(p.avatar, 52, p.acc)}
       <div><h3 style="font-size:18px">נתחיל ממבחן מיקום?</h3>
       <div style="font-size:13px;color:var(--dim)">9 שאלות קצרות שימצאו בדיוק את הרמה שלך — במקום להתחיל מהתחלה</div></div></div>
       <div class="rowbtns" style="margin-top:12px">
@@ -1566,7 +1629,7 @@ function viewHome() {
         <div style="font-size:12.5px;color:var(--dim);margin-bottom:7px">3 קרבות — ${goal}/3</div>
         <div class="bar"><i style="width:${goal / 3 * 100}%;background:var(--mint)"></i></div>
       </div>
-      <div class="mascot-wrap">${p.pet ? pet(p.pet, 46) : mascot(p.avatar, 46)}</div>
+      <div class="mascot-wrap">${p.pet ? pet(p.pet, 46) : mascot(p.avatar, 46, p.acc)}</div>
     </div>
     ${seasonBanner(p, true)}
     <div style="height:14px"></div>
@@ -1668,7 +1731,7 @@ function viewCollect() {
 
 /* ---------------------------------------------------------------- shop */
 let shopTab = "avatars";
-const SHOP_TABS = [["avatars", "דמויות"], ["pets", "חיות"], ["bgs", "רקעים"], ["fx", "אפקטים"]];
+const SHOP_TABS = [["avatars", "דמויות"], ["accs", "אביזרים"], ["pets", "חיות"], ["bgs", "רקעים"], ["fx", "אפקטים"]];
 
 function buy(kind, id, cost) {
   const p = P();
@@ -1685,13 +1748,15 @@ function equip(kind, id) {
   if (kind === "pets") p.pet = (p.pet === id ? null : id);
   if (kind === "bgs") p.bg = id;
   if (kind === "fx") { p.fx = id; playFX(id, "לדוגמה!"); }
+  if (kind === "accs") p.acc = (ACCBY[id] || {}).key || "none";
   SFX.tap(); persist(); render();
 }
 function shopCell(kind, o, art, label) {
   const p = P();
   const own = p.owned.indexOf(o.id) >= 0;
   const eq = (kind === "avatars" && p.avatar === o.id) || (kind === "pets" && p.pet === o.id)
-          || (kind === "bgs" && p.bg === o.id) || (kind === "fx" && p.fx === o.id);
+          || (kind === "bgs" && p.bg === o.id) || (kind === "fx" && p.fx === o.id)
+          || (kind === "accs" && p.acc === o.key);
   const gated = !own && o.need && !needMet(p, o.need);
   const poor = !own && !gated && p.coins < o.cost;
   const cls = "item" + (own ? " own" : "") + (eq ? " eq" : "") + (gated || poor ? " locked" : "");
@@ -1708,7 +1773,10 @@ function viewShop() {
   let body;
   if (shopTab === "avatars") {
     body = `<div class="grid2">${SHOP.avatars.map(o =>
-      shopCell("avatars", o, mascot(o.id, 62), MASCOTS[o.id].name)).join("")}</div>`;
+      shopCell("avatars", o, `<span class="avdisc">${mascot(o.id, 62, p.acc)}</span>`, MASCOTS[o.id].name)).join("")}</div>`;
+  } else if (shopTab === "accs") {
+    body = `<div class="grid2">${SHOP.accs.map(o =>
+      shopCell("accs", o, `<span class="avdisc">${mascot(p.avatar, 62, o.key)}</span>`, o.name)).join("")}</div>`;
   } else if (shopTab === "pets") {
     body = `<div class="grid2">${SHOP.pets.map(o =>
       shopCell("pets", o, pet(o.id, 60), o.name)).join("")}</div>`;
@@ -1722,7 +1790,8 @@ function viewShop() {
       <div class="soft" style="font-size:13.5px;color:var(--dim);margin-top:12px">
         האפקט שנבחר מופיע אחרי כל תשובה נכונה, עם המילה שלו. לחיצה על אפקט שכבר יש לך מציגה אותו.</div>`;
   }
-  const hint = { avatars: "הדמויות היקרות נפתחות רק אחרי הרבה תרגול", pets: "חיית לוויה מלווה אותך במסך הבית",
+  const hint = { avatars: "הדמויות היקרות נפתחות רק אחרי הרבה תרגול", accs: "האביזר נשאר על הדמות שלך בכל מסך",
+                 pets: "חיית לוויה מלווה אותך במסך הבית",
                  bgs: "הרקע משנה את החדר שלך ואת מסך הבחירה", fx: "אפקט לכל תשובה נכונה" }[shopTab];
   return `<h2 style="font-size:22px;margin-bottom:4px">חנות הכוכבות</h2>
     <div style="font-size:13px;color:var(--dim);margin-bottom:2px">${hint}. פרסי אירועים ועונות לא נמכרים כאן לעולם.</div>
@@ -1745,7 +1814,7 @@ function viewEvents() {
     </div>`;
   } else if (left === 0) {
     body = `<div class="card center">
-      <div class="mascot-wrap">${mascot(p.avatar, 74)}</div>
+      <div class="mascot-wrap">${mascot(p.avatar, 74, p.acc)}</div>
       <h3 style="font-size:19px">${rec && rec.tier && rec.tier !== "none" ? "סיימת את האירוע הזה 🎉" : "הפעם הבמה לא הייתה שלנו"}</h3>
       <p style="color:var(--dim);font-size:14px">${rec && rec.tier && rec.tier !== "none"
         ? "זכית בפרס " + TIER_TXT[rec.tier] + ". אי אפשר לחזור על אותו אירוע."
@@ -1788,7 +1857,7 @@ function viewRoom() {
   const p = P();
   return `<h2 style="font-size:22px;margin-bottom:10px">החדר שלי</h2>
     <div class="card center" style="background:${SHOP.bgs.find(b => b.id === p.bg)?.css}">
-      <div class="mascot-wrap">${mascot(p.avatar, 110)}</div>
+      <div class="mascot-wrap">${mascot(p.avatar, 110, p.acc)}</div>
       ${p.pet ? `<div class="mascot-wrap" style="margin-top:-14px">${pet(p.pet, 54)}</div>` : ""}
       <h3 style="font-size:22px">${esc(p.name)}</h3>
       <div style="font-size:13px;color:#EADFFB">${MASCOTS[p.avatar].d}</div>
@@ -1845,7 +1914,7 @@ function viewParent() {
     const evs = Object.entries(p.events).slice(-4).reverse();
     return `<div class="card" style="margin-bottom:12px">
       <div style="display:flex;align-items:center;gap:10px">
-        ${mascot(p.avatar, 44)}<div><h3 style="font-size:19px">${esc(p.name)}</h3>
+        ${mascot(p.avatar, 44, p.acc)}<div><h3 style="font-size:19px">${esc(p.name)}</h3>
         <div style="font-size:12.5px;color:var(--dim)">${gradeOf(p).name} · ${p.battles} קרבות · ${Math.round(p.secs / 60)} דקות תרגול · ${streakTxt(p.streak)}</div></div>
       </div>
       <div class="sec-title">רמה בכל נושא</div>
@@ -1957,7 +2026,7 @@ function restoreCode(code) {
 /* ---- friend code: a small read-only snapshot for comparing ---- */
 function snapshot(p) {
   return {
-    v: 1, n: p.name, av: p.avatar, d: today(),
+    v: 1, n: p.name, av: p.avatar, ac: p.acc || "none", d: today(),
     xp: p.xp || 0, sv: p.solved.total || 0,
     h5: solvedAtLeast(p, 5), h7: solvedAtLeast(p, 7),
     lv: SLOTS.map(t => p.skills[t].lv), gr: p.grade || 2,
@@ -2072,9 +2141,9 @@ function viewCompare() {
     ${others.length > 1 ? `<div class="tabs" style="flex-wrap:wrap">${others.map(o =>
       `<button data-cmp="${esc(o.key)}" aria-selected="${cmpOther === o.key}">${esc(o.name)}</button>`).join("")}</div>` : ""}
     <div class="cmp-head">
-      <div style="border-bottom:4px solid var(--cyan)"><div class="mascot-wrap">${mascot(you.av, 60)}</div><b>${esc(you.n)}</b><span>את</span></div>
+      <div style="border-bottom:4px solid var(--cyan)"><div class="mascot-wrap">${mascot(you.av, 60, you.ac)}</div><b>${esc(you.n)}</b><span>את</span></div>
       <div class="vs">VS</div>
-      <div style="border-bottom:4px solid var(--pink)"><div class="mascot-wrap">${mascot(her.av, 60)}</div><b>${esc(her.n)}</b><span>${esc(her.d || "")}</span></div>
+      <div style="border-bottom:4px solid var(--pink)"><div class="mascot-wrap">${mascot(her.av, 60, her.ac)}</div><b>${esc(her.n)}</b><span>${esc(her.d || "")}</span></div>
     </div>
     <div class="sec-title">מספרים</div>
     <div class="card" style="padding:14px 12px">
@@ -2388,9 +2457,15 @@ function renderBattle() {
       <span class="chip gold"><span class="num">${p.coins}</span> ★</span>
     </div>`;
 
-  const stage = (isEvent || isPlace) ? "" : `<div class="center" style="margin:2px 0 -6px">
-      ${monster(B.seed + Math.floor(B.i / 2), B.mode === "boss" ? 132 : 104, B.mode === "boss")}
-      <div class="hp" style="margin-top:6px"><i style="width:${hpPct}%"></i></div></div>`;
+  const heroArt = `<span class="hero">${mascot(p.avatar, isEvent || isPlace ? 78 : B.mode === "boss" ? 96 : 86, p.acc)}
+      ${p.pet ? `<span class="pet">${pet(p.pet, 34)}</span>` : ""}</span>`;
+  const stage = (isEvent || isPlace)
+    ? `<div class="duel solo">${heroArt}</div>`
+    : `<div>
+        <div class="duel">${heroArt}<span class="vsx">⚔</span>
+          <span class="foe">${monster(B.seed + Math.floor(B.i / 2), B.mode === "boss" ? 126 : 100, B.mode === "boss")}</span></div>
+        <div class="hp"><i style="width:${hpPct}%"></i></div>
+      </div>`;
 
   let body;
   if (B.game === "bubble") {
@@ -2564,7 +2639,7 @@ function viewResult() {
     if (r.tier === "none") {
       const again = r.attemptNo === 1;
       return `<div class="bwrap center" style="justify-content:center;gap:8px">
-        <div class="mascot-wrap">${mascot(p.avatar, 108)}</div>
+        <div class="mascot-wrap">${mascot(p.avatar, 108, p.acc)}</div>
         <h2 style="font-size:24px">${again ? "מועד א' לא הסתדר" : "הפעם הבמה לא הייתה שלנו"}</h2>
         <p style="color:var(--dim)">${r.score} נכון מתוך ${r.total}</p>
         <div class="soft" style="text-align:right">
@@ -2591,7 +2666,7 @@ function viewResult() {
   }
   if (r.mode === "place") {
     return `<div class="bwrap center" style="justify-content:center;gap:10px">
-      <div class="mascot-wrap">${mascot(p.avatar, 108)}</div>
+      <div class="mascot-wrap">${mascot(p.avatar, 108, p.acc)}</div>
       <h2 style="font-size:25px">מצאנו את הרמה שלך!</h2>
       <div class="list" style="width:100%">${TOPIC_IDS.map(id =>
         `<div class="lrow"><b style="min-width:96px">${topicOf(p, id).name}</b>
@@ -2605,7 +2680,7 @@ function viewResult() {
   return `<div class="bwrap center" style="justify-content:center;gap:8px">
     <div style="font-size:40px;letter-spacing:6px;color:var(--gold)">${"★".repeat(stars)}${"☆".repeat(3 - stars)}</div>
     <h2 style="font-size:26px">${r.leveled ? "עלית רמה! ✦" : r.score >= r.total - 1 ? "מדהים!" : r.score >= r.total / 2 ? "כל הכבוד!" : "עבודה יפה"}</h2>
-    <div class="mascot-wrap">${mascot(p.avatar, 96)}</div>
+    <div class="mascot-wrap">${mascot(p.avatar, 96, p.acc)}</div>
     <div class="rewardrow">
       <div class="tile"><b class="num">${r.score}/${r.total}</b><span>נכון</span></div>
       <div class="tile"><b class="num">+${r.coins}</b><span>כוכבים</span></div>
