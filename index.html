@@ -511,34 +511,152 @@ const ICONS = {
 const Q = (text, ans, tag, hint, steps, extra) =>
   Object.assign({ text, ans, tag, hint: hint || "", steps: steps || [["התשובה", String(ans)]] }, extra || {});
 
-/* ----- הסברים משותפים לחיבור וחיסור ----- */
-function sumSteps(a, b, op) {
+/* ===== אסטרטגיות חישוב — לכל תרגיל השיטה שמתאימה לו =====
+   מבוסס על עובדות עוגן (×2, ×5, ×10, ריבועים, כפולות) וגזירה מהן:
+   הוספת/הפחתת קבוצה, הכפלה וחציה, ריבוע סמוך, פירוק גורם,
+   ובחיבור/חיסור: השלמה לעשרת, כפולות, פיצוי, ספירה למעלה, פירוק.   */
+const gap10 = v => (10 - (v % 10)) % 10;
+
+function sumStrategy(a, b, op) {
   const ans = op === "+" ? a + b : a - b;
+  const S = (hint, steps) => ({ hint, steps });
+
   if (op === "+") {
-    const need = (10 - a % 10) % 10;
-    if (need && a % 10 + b > 10) {
-      return [["מפרקים את " + b, `${b} = ${need} + ${b - need}`],
-              ["משלימים לעשרת", `${a} + ${need} = ${a + need}`],
-              ["מוסיפים את השאר", `${a + need} + ${b - need} = ${ans}`]];
+    if (a === b)
+      return S(`${a} + ${a} זו כפולה — עובדה ששווה לזכור`,
+        [["כפולה", `${a} + ${a} = ${ans}`]]);
+    if (Math.abs(a - b) === 1 && Math.max(a, b) <= 12) {
+      const s2 = Math.min(a, b);
+      return S(`קרוב לכפולה: ${s2} + ${s2} = ${2 * s2}, ועוד 1`,
+        [["מתחילים מהכפולה", `${s2} + ${s2} = ${2 * s2}`], ["ועוד 1", `${2 * s2} + 1 = ${ans}`]]);
     }
-    if (b >= 10) return [["קודם העשרות", `${a} + ${Math.floor(b / 10) * 10} = ${a + Math.floor(b / 10) * 10}`],
-                         ["אחר כך האחדות", `${a + Math.floor(b / 10) * 10} + ${b % 10} = ${ans}`]];
-    return [["מחברים", `${a} + ${b} = ${ans}`]];
+    for (const [x, y] of [[b, a], [a, b]]) {
+      const g = gap10(x);
+      if (x >= 8 && g >= 1 && g <= 2 && (x >= 18 || y >= 10)) {
+        const r = x + g;
+        return S(`${x} קרוב ל-${r} — מוסיפים ${r} ואז מורידים ${g}`,
+          [["מעגלים למעלה", `${y} + ${r} = ${y + r}`], [`מורידים ${g}`, `${y + r} − ${g} = ${ans}`]]);
+      }
+    }
+    if (a % 10 === 0 && b % 10 === 0)
+      return S(`סופרים בעשרות: ${a / 10} + ${b / 10} עשרות`,
+        [["בעשרות", `${a / 10} + ${b / 10} = ${ans / 10}`], ["ומוסיפים אפס", `${a} + ${b} = ${ans}`]]);
+    if (b < 10 && (a % 10) + b > 10) {
+      const need = gap10(a);
+      return S(`משלימים לעשרת: ${a} + ${need} = ${a + need}`,
+        [["מפרקים את " + b, `${b} = ${need} + ${b - need}`],
+         ["משלימים לעשרת", `${a} + ${need} = ${a + need}`],
+         ["ומוסיפים את השאר", `${a + need} + ${b - need} = ${ans}`]]);
+    }
+    if (b >= 10) {
+      const t = Math.floor(b / 10) * 10, o = b % 10;
+      const rows = [["קודם העשרות", `${a} + ${t} = ${a + t}`]];
+      if (o) rows.push(["אחר כך האחדות", `${a + t} + ${o} = ${ans}`]);
+      return S(`מפרקים את ${b} ל-${t}${o ? " ועוד " + o : ""}`, rows);
+    }
+    return S("אפשר לספור קדימה מהמספר הגדול", [["מחברים", `${a} + ${b} = ${ans}`]]);
   }
-  const first = a % 10;
-  if (b > first && b < 10) {
-    return [["מפרקים את " + b, `${b} = ${first} + ${b - first}`],
-            ["יורדים לעשרת", `${a} − ${first} = ${a - first}`],
-            ["ממשיכים למטה", `${a - first} − ${b - first} = ${ans}`]];
+
+  /* ---- חיסור ---- */
+  if (b * 2 === a && b > 1)
+    return S(`${b} + ${b} = ${a} — ולכן התשובה היא בדיוק החצי`,
+      [["משפחת עובדות", `${b} + ${b} = ${a}`]]);
+  {
+    const g = gap10(b);
+    if (b >= 8 && g >= 1 && g <= 2) {
+      const r = b + g;
+      return S(`${b} קרוב ל-${r} — מורידים ${r} ואז מחזירים ${g}`,
+        [["מעגלים למעלה", `${a} − ${r} = ${a - r}`], [`מחזירים ${g}`, `${a - r} + ${g} = ${ans}`]]);
+    }
   }
-  if (b >= 10) return [["קודם העשרות", `${a} − ${Math.floor(b / 10) * 10} = ${a - Math.floor(b / 10) * 10}`],
-                       ["אחר כך האחדות", `${a - Math.floor(b / 10) * 10} − ${b % 10} = ${ans}`]];
-  return [["מחסרים", `${a} − ${b} = ${ans}`]];
+  if (b >= 10 && ans <= 5 && ans >= 0)
+    return S(`${b} ו-${a} קרובים — סופרים למעלה מ-${b} עד ${a}`,
+      [["סופרים למעלה", `${a} − ${b} = ${ans}`]]);
+  if (a % 10 === 0 && b % 10 === 0)
+    return S(`סופרים בעשרות: ${a / 10} − ${b / 10} עשרות`,
+      [["בעשרות", `${a / 10} − ${b / 10} = ${ans / 10}`], ["ומוסיפים אפס", `${a} − ${b} = ${ans}`]]);
+  if (b < 10 && (a % 10) < b) {
+    const first = a % 10;
+    return S(`קודם יורדים לעשרת: ${a} − ${first} = ${a - first}`,
+      [["מפרקים את " + b, `${b} = ${first} + ${b - first}`],
+       ["יורדים לעשרת", `${a} − ${first} = ${a - first}`],
+       ["וממשיכים למטה", `${a - first} − ${b - first} = ${ans}`]]);
+  }
+  if (b >= 100) {
+    const h = Math.floor(b / 100) * 100, t = Math.floor((b % 100) / 10) * 10, o = b % 10;
+    const rows = [["קודם המאות", `${a} − ${h} = ${a - h}`]];
+    if (t) rows.push(["אחר כך העשרות", `${a - h} − ${t} = ${a - h - t}`]);
+    if (o) rows.push(["ולבסוף האחדות", `${a - h - t} − ${o} = ${ans}`]);
+    return S(`מפרקים את ${b} למאות, עשרות ואחדות`, rows);
+  }
+  if (b >= 10) {
+    const t = Math.floor(b / 10) * 10, o = b % 10;
+    const rows = [["קודם העשרות", `${a} − ${t} = ${a - t}`]];
+    if (o) rows.push(["אחר כך האחדות", `${a - t} − ${o} = ${ans}`]);
+    return S(`מפרקים את ${b} ל-${t}${o ? " ועוד " + o : ""}`, rows);
+  }
+  return S("אפשר לספור אחורה", [["מחסרים", `${a} − ${b} = ${ans}`]]);
 }
-const addQ = (a, b, op, tag, hint, extra) =>
-  Q(`${a} ${op} ${b} = ?`, op === "+" ? a + b : a - b, tag,
-    hint || (op === "+" ? "אפשר לספור קדימה, או להשלים לעשרת" : "אפשר לספור אחורה, או לרדת קודם לעשרת"),
-    sumSteps(a, b, op), extra);
+const sumSteps = (a, b, op) => sumStrategy(a, b, op).steps;
+
+const addQ = (a, b, op, tag, hint, extra) => {
+  const st = sumStrategy(a, b, op);
+  return Q(`${a} ${op} ${b} = ?`, op === "+" ? a + b : a - b, tag, st.hint, st.steps, extra);
+};
+
+/* ----- כפל: האסטרטגיה נבחרת לפי הגורם הנוח בתרגיל ----- */
+function mulStrategy(x, y) {
+  const pair = v => (x === v ? y : (y === v ? x : null));
+  const S = (hint, steps) => ({ hint, steps });
+  let o;
+  if ((o = pair(0)) !== null) return S("כל מספר כפול 0 הוא 0", [["כפל ב-0", `${x} × ${y} = 0`]]);
+  if ((o = pair(1)) !== null) return S("כל מספר כפול 1 נשאר כמו שהוא", [["כפל ב-1", `${x} × ${y} = ${o}`]]);
+  if ((o = pair(10)) !== null)
+    return S("כפל ב-10 — מוסיפים אפס בסוף", [["מוסיפים אפס", `${o} × 10 = ${o * 10}`]]);
+  if ((o = pair(2)) !== null)
+    return S(`כפל ב-2 זה ${o} ועוד ${o}`, [["מחברים את המספר לעצמו", `${o} + ${o} = ${2 * o}`]]);
+  if ((o = pair(5)) !== null)
+    return S(`קל יותר לחשב ${o} × 10 ואז לקחת חצי`,
+      [["קודם כפול 10", `${o} × 10 = ${o * 10}`], ["וחצי מזה", `${o * 10} ÷ 2 = ${5 * o}`]]);
+  if ((o = pair(9)) !== null)
+    return S(`9 זה 10 פחות 1 — ${o} × 10 ואז פחות ${o}`,
+      [["קודם כפול 10", `${o} × 10 = ${o * 10}`], ["פחות קבוצה אחת", `${o * 10} − ${o} = ${9 * o}`]]);
+  if ((o = pair(4)) !== null)
+    return S("כפל ב-4 זה להכפיל פעמיים",
+      [["מכפילים פעם אחת", `${o} + ${o} = ${2 * o}`], ["ומכפילים שוב", `${2 * o} + ${2 * o} = ${4 * o}`]]);
+  if ((o = pair(3)) !== null)
+    return S(`3 זה 2 ועוד 1 — ${o} × 2 ואז עוד ${o}`,
+      [["קודם כפול 2", `${o} × 2 = ${2 * o}`], ["ועוד קבוצה אחת", `${2 * o} + ${o} = ${3 * o}`]]);
+  if (x === y)
+    return S(`${x} × ${x} זה ריבוע — עובדה ששווה לזכור בעל פה`, [["ריבוע", `${x} × ${x} = ${x * x}`]]);
+  if (Math.abs(x - y) === 1) {
+    const s2 = Math.min(x, y), big = Math.max(x, y);
+    return S(`הריבוע ${s2} × ${s2} קרוב — ואז עוד קבוצה אחת`,
+      [["מתחילים מהריבוע", `${s2} × ${s2} = ${s2 * s2}`], ["ועוד קבוצה", `${s2 * s2} + ${s2} = ${s2 * big}`]]);
+  }
+  if ((o = pair(6)) !== null)
+    return S(`6 זה 5 ועוד 1 — ${o} × 5 ואז עוד ${o}`,
+      [["קודם כפול 5", `${o} × 5 = ${5 * o}`], ["ועוד קבוצה אחת", `${5 * o} + ${o} = ${6 * o}`]]);
+  if ((o = pair(7)) !== null)
+    return S(`מפרקים את 7 ל-5 ועוד 2`,
+      [["החלק הראשון", `${o} × 5 = ${5 * o}`], ["החלק השני", `${o} × 2 = ${2 * o}`],
+       ["מחברים", `${5 * o} + ${2 * o} = ${7 * o}`]]);
+  return S(`${x} × ${y - 1} קרוב — ואז עוד קבוצה`,
+    [["צעד אחורה", `${x} × ${y - 1} = ${x * (y - 1)}`], ["ועוד קבוצה", `${x * (y - 1)} + ${x} = ${x * y}`]]);
+}
+function mulQ(t, b) {
+  const st = mulStrategy(t, b);
+  return Q(`${t} × ${b} = ?`, t * b, `כפולות ${t}`, st.hint, st.steps);
+}
+function divQ(d, q) {
+  const a = d * q;
+  if (d === 10) return Q(`${a} ÷ 10 = ?`, q, "חילוק ב-10", "מורידים אפס אחד מהסוף", [["מורידים אפס", `${a} ÷ 10 = ${q}`]]);
+  if (d === 2) return Q(`${a} ÷ 2 = ?`, q, "חילוק ב-2", `לחלק ב-2 זה למצוא חצי מ-${a}`, [["חצי", `${a} ÷ 2 = ${q}`]]);
+  if (d === 5) return Q(`${a} ÷ 5 = ?`, q, "חילוק ב-5", "אפשר לכפול ב-2 ואז לחלק ב-10",
+    [["כופלים ב-2", `${a} × 2 = ${2 * a}`], ["ומחלקים ב-10", `${2 * a} ÷ 10 = ${q}`]]);
+  return Q(`${a} ÷ ${d} = ?`, q, `חילוק ב-${d}`, `חילוק זה כפל הפוך: ${d} כפול כמה נותן ${a}?`,
+    [["חושבים הפוך", `${d} × ? = ${a}`], ["נקודת עוגן", `${d} × 5 = ${5 * d}`], ["ומשם", `${a} ÷ ${d} = ${q}`]]);
+}
 
 /* ----- שמות ופריטים לבעיות מילוליות -----
    כל שם נושא מגדר, והפעלים בתבניות מתאימים את עצמם. */
@@ -654,15 +772,6 @@ function g2add(L) {
   a = rnd(12, 40); b = rnd(4, 20); const c2 = rnd(3, 15);
   return Q(`${a} + ${b} − ${c2} = ?`, a + b - c2, "שרשרת פעולות", "פותרים שלב אחרי שלב",
     [["שלב 1", `${a} + ${b} = ${a + b}`], ["שלב 2", `${a + b} − ${c2} = ${a + b - c2}`]]);
-}
-const mulSteps = (t, b) => [["כפל זה חיבור חוזר", `${b} פעמים ${t}`],
-  ["צעד אחורה", `${t} × ${b - 1} = ${t * (b - 1)}`], ["ועוד אחד", `${t * (b - 1)} + ${t} = ${t * b}`]];
-function mulQ(t, b) {
-  return Q(`${t} × ${b} = ?`, t * b, `כפולות ${t}`, `${t} × ${b - 1} = ${t * (b - 1)}, אז צריך עוד ${t}`, mulSteps(t, b));
-}
-function divQ(d, q) {
-  return Q(`${d * q} ÷ ${d} = ?`, q, `חילוק ב-${d}`, `כמה פעמים ${d} נכנס ב-${d * q}?`,
-    [["חילוק זה כפל הפוך", `${d} × ? = ${d * q}`], ["התשובה", `${d} × ${q} = ${d * q}`]]);
 }
 function g2mul(L) {
   if (L === 1) return mulQ(2, rnd(2, 10));
@@ -2567,7 +2676,8 @@ function calcLines(q) {
     if (prevRes && prevExpr) {
       const re = new RegExp("(^|[^\\d.])" + prevRes.replace(".", "\\.") + "([^\\d.]|$)", "g");
       /* תמיד בסוגריים ולעולם לא במילה — כך הסדר חד-משמעי ואין בלבול ימין/שמאל */
-      expr = expr.replace(re, (m, a, b) => a + "(" + prevExpr + ")" + b);
+      const sub = expr.replace(re, (m, a, b) => a + "(" + prevExpr + ")" + b);
+      if (sub.length <= 34) expr = sub;
     }
     /* שלב פירוק ("382 = 6 + 376") שווה להציג במלואו — הוא מלמד ולא מגלה */
     if (/^[-\d.,]+$/.test(expr) && eq > 0) expr = full;
@@ -2599,11 +2709,17 @@ function explainRows(q, reveal) {
     const numeric = /^[-\d.,]+$/.test(res);
     if (prevRes && prevExpr) {
       const re = new RegExp("(^|[^\\d.])" + prevRes.replace(".", "\\.") + "([^\\d.]|$)", "g");
-      expr = expr.replace(re, (m, a, c) => a + "(" + prevExpr + ")" + c);
+      const sub = expr.replace(re, (m, a, c) => a + "(" + prevExpr + ")" + c);
+      if (sub.length <= 34) expr = sub;
     }
     rows.push([String(st[0] || ""), (eq > 0 && numeric) ? expr + " = " + (reveal ? res : "?") : full]);
     if (numeric) { prevRes = res; prevExpr = expr; } else { prevRes = null; prevExpr = null; }
   });
+  /* בפתרון המלא תמיד חותמים בתשובה, גם כששלבי ההסבר לא מגיעים אליה */
+  if (reveal) {
+    const ends = rows.some(r => String(r[1]).split("=").pop().trim() === String(q.ans));
+    if (!ends) rows.push(["התשובה", String(q.ans)]);
+  }
   return rows;
 }
 function helpBox(q) {
