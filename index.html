@@ -177,6 +177,14 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;margin:0;text-wrap:balance;lett
 .key.del{color:var(--dim)}
 .hintbox{margin-top:12px;background:rgba(110,231,249,.10);border:1px solid rgba(110,231,249,.35);
   border-radius:var(--rm);padding:12px 14px;font-size:15px;color:#CDF4FB}
+.hintbox .hb-t{font-family:var(--disp);font-size:12.5px;color:#8FD8FF;margin:2px 0 4px}
+.hintbox .hb-t:not(:first-child){margin-top:11px}
+.hintbox .hb-calc{direction:ltr;text-align:center;font-family:var(--disp);font-size:22px;
+  color:#EAFBFF;background:rgba(0,0,0,.22);border-radius:12px;padding:9px 8px;line-height:1.5}
+.helpbtn{display:block;width:100%;margin-top:12px;padding:12px;border-radius:var(--rm);
+  background:rgba(110,231,249,.10);border:1px dashed rgba(110,231,249,.45);
+  color:#9FE8F7;font-size:15px;font-family:var(--disp)}
+.helpbtn:active{background:rgba(110,231,249,.2)}
 .steps-x{margin-top:12px;background:var(--raised);border-radius:var(--rm);padding:14px;font-size:16px}
 .steps-x div{padding:7px 0;border-bottom:1px dashed var(--line);direction:ltr;text-align:center;font-family:var(--disp);font-size:19px}
 .steps-x div:last-child{border:0}
@@ -2020,7 +2028,7 @@ function viewParent() {
       <div class="rewardrow" style="margin:0">
         <div class="tile"><b class="num">${acc === null ? "—" : acc + "%"}</b><span>דיוק</span></div>
         <div class="tile"><b class="num">${p.log.filter(a => a.d >= dayNum() - 7).length}</b><span>שאלות</span></div>
-        <div class="tile"><b class="num">${p.coins}</b><span>כוכבים</span></div>
+        <div class="tile"><b class="num">${p.helps || 0}</b><span>שימושי עזרה</span></div>
       </div>
       <div class="sec-title">נקודות חולשה</div>
       ${weak.length ? `<div class="list">${weak.map(([tag, c]) =>
@@ -2532,6 +2540,37 @@ function pickGame() {
   if (B.game === "bubble") B.opts = choicesFor(q);
 }
 
+/* ----------------------------------------------------------- עזרה */
+/* התרגיל כפי שהוא נראה בלי התשובה — שלב ראשון מלא, והמשכים ממוסכים */
+function calcLines(q) {
+  if (!Array.isArray(q.steps)) return [];
+  const out = [];
+  let prev = null;
+  q.steps.slice(0, 3).forEach(st => {
+    const full = String(st[1] || "").trim();
+    const eq = full.lastIndexOf("=");
+    let expr = eq > 0 ? full.slice(0, eq).trim() : full;
+    const res = eq > 0 ? full.slice(eq + 1).trim() : "";
+    /* "התוצאה" רק כשהמספר הפותח הוא באמת התוצאה של השלב הקודם */
+    if (prev && expr.indexOf(prev) === 0) expr = "התוצאה" + expr.slice(prev.length);
+    if (expr.length < 3) expr = (eq > 0 ? full : String(st[0] || "")).trim();
+    if (expr) out.push(expr);
+    prev = /^[-\d.,]+$/.test(res) ? res : null;
+  });
+  /* רשת ביטחון: שום שורה לא תחשוף את התשובה עצמה */
+  const a = String(q.ans).replace(".", "\\.");
+  const spoil = new RegExp("(^|[^\\d.])" + a + "([^\\d.]|$)");
+  return out.filter(l => !spoil.test(l));
+}
+function helpBox(q) {
+  const lines = calcLines(q);
+  const calc = lines.length
+    ? `<div class="hb-t">${q.word ? "התרגיל במספרים" : "דרך לפתרון"}</div>
+       <div class="hb-calc">${lines.map(l => `<div dir="${/[\u0590-\u05FF]/.test(l) ? "rtl" : "ltr"}">${esc(l)}</div>`).join("")}</div>` : "";
+  const tip = q.hint ? `<div class="hb-t">רמז</div><div>${esc(q.hint)}</div>` : "";
+  return `<div class="hintbox">${q.word ? calc + tip : tip + calc}</div>`;
+}
+
 /* ------------------------------------------------------------ battle UI */
 function renderBattle() {
   const p = P(), q = B.qs[B.i], total = B.qs.length;
@@ -2598,7 +2637,9 @@ function renderBattle() {
     </div>`;
   }
 
-  const hint = B.hint && !isEvent ? `<div class="hintbox">💡 ${esc(q.hint)}</div>` : "";
+  const canHelp = (B.mode === "normal" || B.mode === "fun");
+  const hint = B.hint ? helpBox(q)
+    : (canHelp && !B.explain ? `<button class="helpbtn" data-help="1">💡 צריך עזרה?</button>` : "");
   const expl = B.explain ? `<div class="steps-x">${q.steps.map(s =>
       `<div class="lbl">${esc(s[0])}</div><div>${esc(s[1])}</div>`).join("")}
       <button class="btn pink" style="margin-top:12px" data-next="1">הבנתי, ממשיכים</button></div>` : "";
@@ -2814,6 +2855,12 @@ function wireScreen() {
     const said = b.dataset.tf === "1";
     submit(said === B.tfTruth ? B.qs[B.i].ans : B.qs[B.i].ans + 999);
   });
+  const hb = document.querySelector("[data-help]");
+  if (hb) hb.onclick = () => {
+    SFX.tap(); B.hint = true;
+    const q2 = P(); q2.helps = (q2.helps || 0) + 1; persist();
+    render();
+  };
   const nx = document.querySelector("[data-next]"); if (nx) nx.onclick = () => { SFX.tap(); nextQ(); };
 
   /* profile select */
