@@ -179,8 +179,9 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;margin:0;text-wrap:balance;lett
   border-radius:var(--rm);padding:12px 14px;font-size:15px;color:#CDF4FB}
 .hintbox .hb-t{font-family:var(--disp);font-size:12.5px;color:#8FD8FF;margin:2px 0 4px}
 .hintbox .hb-t:not(:first-child){margin-top:11px}
-.hintbox .hb-calc{direction:ltr;text-align:center;font-family:var(--disp);font-size:22px;
-  color:#EAFBFF;background:rgba(0,0,0,.22);border-radius:12px;padding:9px 8px;line-height:1.5}
+.hintbox .hb-calc{direction:ltr;text-align:center;font-family:var(--disp);
+  font-size:clamp(15px,5.2vw,22px);color:#EAFBFF;background:rgba(0,0,0,.22);
+  border-radius:12px;padding:9px 8px;line-height:1.55;overflow-wrap:anywhere}
 .helpbtn{display:block;width:100%;margin-top:12px;padding:12px;border-radius:var(--rm);
   background:rgba(110,231,249,.10);border:1px dashed rgba(110,231,249,.45);
   color:#9FE8F7;font-size:15px;font-family:var(--disp)}
@@ -788,7 +789,8 @@ function g4ops(L) {
        ["מחברים", `${a * b}`]]); }
   if (L === 4) { const d = rnd(3, 9), q = rnd(11, 25);
     return Q(`${d * q} ÷ ${d} = ?`, q, "חילוק ארוך", `כמה פעמים ${d} נכנס ב-${d * q}?`,
-      [["מפרקים", `${d * q} = ${d * 10} + ${d * (q - 10)}`], ["מחלקים", `10 + ${q - 10} = ${q}`]]); }
+      [["מפרקים לשני חלקים נוחים", `${d * q} = ${d * 10} + ${d * (q - 10)}`],
+       ["מחלקים כל חלק ומחברים", `${d * 10} ÷ ${d} + ${d * (q - 10)} ÷ ${d}`]]); }
   if (L === 5) { const d = rnd(3, 9), q = rnd(4, 12), r = rnd(1, d - 1);
     return Q(`${d * q + r} ÷ ${d} — כמה נשאר?`, r, "חילוק עם שארית", `${d} × ${q} = ${d * q}, וזה קרוב ל-${d * q + r}`,
       [["הכפולה הקרובה", `${d} × ${q} = ${d * q}`], ["השארית", `${d * q + r} − ${d * q} = ${r}`]]); }
@@ -1080,6 +1082,15 @@ function genQ(p, slot, L) {
   let q;
   try { q = t.gen(L); } catch (e) { q = Q("1 + 1 = ?", 2, "חיבור", "", null); }
   q.topic = slot; q.level = L;
+  /* בבעיה מילולית: מחליפים את "8 + 9 = 17" בדרך המלאה (השלמה לעשרת וכו') */
+  if (q.word && Array.isArray(q.steps) && q.steps.length) {
+    const last = q.steps[q.steps.length - 1];
+    const m = String(last[1] || "").match(/^\s*(\d+)\s*([+\u2212])\s*(\d+)\s*=/);
+    if (m) {
+      const deep = sumSteps(+m[1], +m[3], m[2]);
+      if (deep.length > 1) q.steps = q.steps.slice(0, -1).concat(deep);
+    }
+  }
   q.id = slot + L + "|" + q.text;
   return q;
 }
@@ -2545,22 +2556,55 @@ function pickGame() {
 function calcLines(q) {
   if (!Array.isArray(q.steps)) return [];
   const out = [];
-  let prev = null;
+  let prevExpr = null, prevRes = null;
   q.steps.slice(0, 3).forEach(st => {
     const full = String(st[1] || "").trim();
     const eq = full.lastIndexOf("=");
     let expr = eq > 0 ? full.slice(0, eq).trim() : full;
     const res = eq > 0 ? full.slice(eq + 1).trim() : "";
-    /* "התוצאה" רק כשהמספר הפותח הוא באמת התוצאה של השלב הקודם */
-    if (prev && expr.indexOf(prev) === 0) expr = "התוצאה" + expr.slice(prev.length);
-    if (expr.length < 3) expr = (eq > 0 ? full : String(st[0] || "")).trim();
+    /* תוצאת ביניים משלב קודם מוחלפת בתרגיל שיצר אותה, בסוגריים —
+       כדי שהעזרה לא תפתור שום שלב במקום הילד/ה */
+    if (prevRes && prevExpr) {
+      const re = new RegExp("(^|[^\\d.])" + prevRes.replace(".", "\\.") + "([^\\d.]|$)", "g");
+      /* תמיד בסוגריים ולעולם לא במילה — כך הסדר חד-משמעי ואין בלבול ימין/שמאל */
+      expr = expr.replace(re, (m, a, b) => a + "(" + prevExpr + ")" + b);
+    }
+    /* שלב פירוק ("382 = 6 + 376") שווה להציג במלואו — הוא מלמד ולא מגלה */
+    if (/^[-\d.,]+$/.test(expr) && eq > 0) expr = full;
+    else if (expr.length < 3) expr = (eq > 0 ? full : String(st[0] || "")).trim();
     if (expr) out.push(expr);
-    prev = /^[-\d.,]+$/.test(res) ? res : null;
+    if (/^[-\d.,]+$/.test(res)) { prevRes = res; prevExpr = expr; }
+    else { prevRes = null; prevExpr = null; }
   });
-  /* רשת ביטחון: שום שורה לא תחשוף את התשובה עצמה */
-  const a = String(q.ans).replace(".", "\\.");
-  const spoil = new RegExp("(^|[^\\d.])" + a + "([^\\d.]|$)");
-  return out.filter(l => !spoil.test(l));
+  /* ניקוי: שורה שהיא רק מספר מגלה ערך במקום להראות דרך,
+     ושלב של "+ 0" לא מלמד כלום */
+  const ans = String(q.ans);
+  return out.filter(l => {
+    const t = l.trim();
+    if (/^[-\d.,]+$/.test(t)) return false;
+    if (t === ans) return false;
+    if (/[+−-]\s*0\s*$/.test(t)) return false;
+    return true;
+  });
+}
+/* שורות ההסבר: תוצאות ביניים בסוגריים, והתוצאה מוסתרת עד הניסיון האחרון */
+function explainRows(q, reveal) {
+  const rows = [];
+  let prevExpr = null, prevRes = null;
+  (q.steps || []).forEach(st => {
+    const full = String(st[1] || "").trim();
+    const eq = full.lastIndexOf("=");
+    let expr = eq > 0 ? full.slice(0, eq).trim() : full;
+    const res = eq > 0 ? full.slice(eq + 1).trim() : "";
+    const numeric = /^[-\d.,]+$/.test(res);
+    if (prevRes && prevExpr) {
+      const re = new RegExp("(^|[^\\d.])" + prevRes.replace(".", "\\.") + "([^\\d.]|$)", "g");
+      expr = expr.replace(re, (m, a, c) => a + "(" + prevExpr + ")" + c);
+    }
+    rows.push([String(st[0] || ""), (eq > 0 && numeric) ? expr + " = " + (reveal ? res : "?") : full]);
+    if (numeric) { prevRes = res; prevExpr = expr; } else { prevRes = null; prevExpr = null; }
+  });
+  return rows;
 }
 function helpBox(q) {
   const lines = calcLines(q);
@@ -2640,9 +2684,11 @@ function renderBattle() {
   const canHelp = (B.mode === "normal" || B.mode === "fun");
   const hint = B.hint ? helpBox(q)
     : (canHelp && !B.explain ? `<button class="helpbtn" data-help="1">💡 צריך עזרה?</button>` : "");
-  const expl = B.explain ? `<div class="steps-x">${q.steps.map(s =>
-      `<div class="lbl">${esc(s[0])}</div><div>${esc(s[1])}</div>`).join("")}
-      <button class="btn pink" style="margin-top:12px" data-next="1">הבנתי, ממשיכים</button></div>` : "";
+  const expl = B.explain ? `<div class="steps-x">
+      <div class="lbl" style="font-size:12.5px;color:var(--gold)">${B.explain === 2 ? "הפתרון המלא" : "ככה פותרים — נסו שוב"}</div>
+      ${explainRows(q, B.explain === 2).map(r =>
+        `<div class="lbl">${esc(r[0])}</div><div dir="${/[\u0590-\u05FF]/.test(r[1]) ? "rtl" : "ltr"}">${esc(r[1])}</div>`).join("")}
+      <button class="btn pink" style="margin-top:12px" data-next="1">${B.explain === 2 ? "הבנתי, ממשיכים" : "הבנתי, מנסה שוב"}</button></div>` : "";
 
   return `<div class="bwrap">${head}${stage}${body}${hint}${expl}</div>`;
 }
@@ -2669,11 +2715,17 @@ function submit(val) {
   B.combo = 0; SFX.hit();
   B.feedback = "no";
   B.tries++;
-  if (B.mode === "event" || B.tries >= 2) {
+  if (B.mode === "event") {
     B.marks[B.i] = "bad";
     logAttempt(q, false, ms);
-    if (B.mode === "event") { render(); setTimeout(nextQ, 700); }
-    else { B.explain = true; B.hint = false; render(); }
+    render(); setTimeout(nextQ, 700);
+    return;
+  }
+  if (B.tries >= 2) {
+    if (B.marks[B.i] !== "bad") { B.marks[B.i] = "bad"; logAttempt(q, false, ms); }
+    B.explain = B.tries >= 3 ? 2 : 1;   /* 1 = הדרך בלבד, 2 = גם התשובה */
+    B.hint = false; B.input = "";
+    render();
     return;
   }
   B.hint = true;
@@ -2861,7 +2913,12 @@ function wireScreen() {
     const q2 = P(); q2.helps = (q2.helps || 0) + 1; persist();
     render();
   };
-  const nx = document.querySelector("[data-next]"); if (nx) nx.onclick = () => { SFX.tap(); nextQ(); };
+  const nx = document.querySelector("[data-next]");
+  if (nx) nx.onclick = () => {
+    SFX.tap();
+    if (B && B.explain === 1) { B.explain = false; B.hint = true; B.input = ""; B.feedback = ""; return render(); }
+    nextQ();
+  };
 
   /* profile select */
   document.querySelectorAll("[data-p]").forEach(b => b.onclick = () => {
